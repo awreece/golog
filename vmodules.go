@@ -1,4 +1,4 @@
-package vlog
+package golog
 
 import (
 	"bytes"

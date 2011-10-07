@@ -6,7 +6,7 @@
 // fatalLineOuter = logOuter that logs message with inserted newline then
 //					exits with call to os.EXIT(1)
 
-package vlog
+package golog
 
 import (
 	"flag"

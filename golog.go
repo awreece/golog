@@ -31,7 +31,7 @@
 //     will only produce output if n is *below* the global threshold, rather
 //     than above.
 
-package vlog
+package golog
 
 import (
 	"fmt"
