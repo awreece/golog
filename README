@@ -1,0 +1,3 @@
+This package is designed to support better logging for Go. Specifically, this
+project aims to support different levels of logging and the ability to
+customize log output via custom implementations of the Logger interface.
