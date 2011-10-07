@@ -1,3 +1,6 @@
 This package is designed to support better logging for Go. Specifically, this
 project aims to support different levels of logging and the ability to
 customize log output via custom implementations of the Logger interface.
+
+DISCLAIMER: THIS PROJECT IS NOT IN A SANE STATE YET. ALL EXTERNAL APIS AND
+INTERNAL IMPLEMENTATIONS ARE SUBJECT TO CHANGE WITH LITTLE TO NO NOTICE.
