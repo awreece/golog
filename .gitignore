@@ -1,0 +1,12 @@
+*.[568ao]
+[568a].out
+_obj/
+_obj
+_test
+_testmain.go
+test/pass.out
+test/run.out
+test/times.out
+test/garbage/*.out
+build.out
+test.out
