@@ -21,7 +21,7 @@ type LogOuter interface {
 	FailNow()
 }
 
-func formatLogMessage(m *LogMessage) string {
+func formatLogMessage(m *LogMessage, insertNewline bool) string {
 	var buf bytes.Buffer
 	buf.WriteString(levelStrings[int(proto.GetInt32(m.Level))])
 	t := time.NanosecondsToLocalTime(proto.GetInt64(m.Nanoseconds))
@@ -44,6 +44,9 @@ func formatLogMessage(m *LogMessage) string {
 	}
 	buf.WriteString("] ")
 	buf.WriteString(proto.GetString(m.Message))
+	if insertNewline {
+		buf.WriteString("\n")
+	}
 	return buf.String()
 }
 
@@ -54,16 +57,8 @@ type fileLogOuter struct {
 
 func (f *fileLogOuter) Output(m *LogMessage) {
 	// TODO Grab mutex?
-	s := proto.GetString(m.Message)
-	l := len(s)
-	if l > 0 {
-		if s[l-1] == '\n' {
-			f.WriteString(s)
-		} else {
-			f.WriteString(s + "\n")
-		}
-	}
-
+	// Make sure to insert a newline.
+	f.WriteString(formatLogMessage(m, true))
 	f.Sync()
 }
 
@@ -90,17 +85,9 @@ type testLogOuter struct {
 }
 
 func (t *testLogOuter) Output(m *LogMessage) {
-	s := proto.GetString(m.Message)
-	l := len(s)
-	if l > 0 {
-		// Since testers insert newlines, we strip the newline
-		// in our string.
-		if s[l-1] == '\n' {
-			t.Log(s[:l-1])
-		} else {
-			t.Log(s)
-		}
-	}
+	// Don't insert an additional log message since the tester inserts them
+	// for us.
+	t.Log(formatLogMessage(m, false))
 }
 
 func NewTestLogOuter(t TestController) LogOuter {
