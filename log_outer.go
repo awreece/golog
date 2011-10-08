@@ -19,10 +19,12 @@ type LogOuter interface {
 }
 
 type fileLogOuter struct {
+	// TODO Insert mutex?
 	*os.File
 }
 
 func (f *fileLogOuter) Println(s string) {
+	// TODO Grab mutex?
 	l := len(s)
 	if l > 0 {
 		if s[l-1] == '\n' {
@@ -36,6 +38,7 @@ func (f *fileLogOuter) Println(s string) {
 }
 
 func (f *fileLogOuter) FailNow() {
+	// TODO Grab mutex?
 	f.Close()
 	os.Exit(1)
 }
