@@ -7,8 +7,7 @@ import (
 )
 
 type multiLogOuter struct {
-	// TODO Insert mutex here.
-	outers []*loggerImpl
+	outers []LogOuter
 }
 
 func (l *multiLogOuter) String() string {
@@ -31,27 +30,23 @@ func (l *multiLogOuter) Set(name string) bool {
 
 // TODO only require filename.
 func (l *multiLogOuter) AddDefaultLogFile(filename string, file *os.File) {
-	// TODO Grab mutex.
-	l.outers = append(l.outers, &loggerImpl{
-		LogOuter:         &fileLogOuter{file},
-		minloglevel:      flag_minloglevel,
-		vmoduleLevelsMap: flag_vmodule,
-	})
+	l.outers = append(l.outers, &fileLogOuter{file})
 }
 
 func (l *multiLogOuter) AddDefaultLogTester(t TestController) {
-	// TODO Grab Mutex
-	l.outers = append(l.outers, &loggerImpl{
-		LogOuter:         &testLogOuter{t},
-		minloglevel:      flag_minloglevel,
-		vmoduleLevelsMap: flag_vmodule,
-	})
+	l.outers = append(l.outers, &testLogOuter{t})
 }
 
 func (l *multiLogOuter) Println(s string) {
+	for _, outer := range l.outers {
+		outer.Println(s)
+	}
 }
 
 func (l *multiLogOuter) FailNow() {
+	for _, outer := range l.outers {
+		outer.FailNow()
+	}
 }
 
 var defaultLogOuters multiLogOuter
