@@ -2,8 +2,6 @@ package golog
 
 import (
 	"flag"
-	"fmt"
-	"os"
 )
 
 // Prints everything this level and above. (Set to SILENT to disable).
@@ -39,51 +37,3 @@ type loggerImpl struct {
 	vmoduleLevelsMap
 }
 
-type logOuterList struct {
-	// TODO Insert mutex here.
-	outers []*loggerImpl
-}
-
-func (l *logOuterList) String() string {
-	return fmt.Sprint("\"", l.outers, "\"")
-}
-
-func (l *logOuterList) Set(name string) bool {
-	if file, err := os.Create(name); err != nil {
-		os.Stderr.WriteString(
-			fmt.Sprint("Error opening file for logging", name,
-				": ", err))
-		return false
-	} else {
-		l.AddDefaultLogFile(name, file)
-		return true
-	}
-
-	panic("Code never reaches here, this mollifies the compiler.")
-}
-
-// TODO only require filename.
-func (l *logOuterList) AddDefaultLogFile(filename string, file *os.File) {
-	// TODO Grab mutex.
-	l.outers = append(l.outers, &loggerImpl{
-		LogOuter:         &fileLogOuter{file},
-		minloglevel:      flag_minloglevel,
-		vmoduleLevelsMap: flag_vmodule,
-	})
-}
-
-func (l *logOuterList) AddDefaultLogTester(t TestController) {
-	// TODO Grab Mutex
-	l.outers = append(l.outers, &loggerImpl{
-		LogOuter:         &testLogOuter{t},
-		minloglevel:      flag_minloglevel,
-		vmoduleLevelsMap: flag_vmodule,
-	})
-}
-
-var LogOuters logOuterList
-
-func init() {
-	flag.Var(&LogOuters, "vlog.logfile", "Log to given file - can be"+
-		" provided multiple times to log to multiple files")
-}

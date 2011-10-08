@@ -8,5 +8,6 @@ GOFILES=\
 	vmodules.go\
 	logger.go\
 	level_logger.go\
+	multi_log_outer.go\
 
 include $(GOROOT)/src/Make.pkg

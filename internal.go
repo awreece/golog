@@ -91,7 +91,7 @@ func outputv(vloglevel int, pack string, closure func() string) {
 	var closureString string
 	var closureEvaled bool
 	// TODO Grab mutex.
-	for _, outer := range LogOuters.outers {
+	for _, outer := range defaultLogOuters.outers {
 		if vloglevel <= outer.vmoduleLevel(pack) {
 			if !closureEvaled {
 				closureString, closureEvaled = closure(), true
@@ -105,7 +105,7 @@ func output(level int, vloglevel int, pack string, closure func() string) {
 	var closureString string
 	var closureEvaled bool
 	// TODO Grab mutex.
-	for _, outer := range LogOuters.outers {
+	for _, outer := range defaultLogOuters.outers {
 		if level >= *outer.minloglevel{
 			if !closureEvaled {
 				closureString, closureEvaled = closure(), true
