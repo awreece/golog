@@ -7,7 +7,8 @@ import (
 )
 
 type multiLogOuter struct {
-	outers []LogOuter
+	// TODO Add mutex.
+	outers map[string]LogOuter
 }
 
 func (l *multiLogOuter) String() string {
@@ -21,20 +22,21 @@ func (l *multiLogOuter) Set(name string) bool {
 				": ", err))
 		return false
 	} else {
-		l.AddDefaultLogFile(name, file)
+		l.AddLogOuter(name, NewFileLogOuter(file))
 		return true
 	}
 
 	panic("Code never reaches here, this mollifies the compiler.")
 }
 
-// TODO only require filename.
-func (l *multiLogOuter) AddDefaultLogFile(filename string, file *os.File) {
-	l.outers = append(l.outers, &fileLogOuter{file})
+func (l *multiLogOuter) AddLogOuter(key string, outer LogOuter) {
+	// TODO Grab mutex.
+	l.outers[key] = outer
 }
 
-func (l *multiLogOuter) AddDefaultLogTester(t TestController) {
-	l.outers = append(l.outers, &testLogOuter{t})
+func (l *multiLogOuter) RemoveLogOuter(key string) {
+	// TODO Be Go1 compatible. :)
+	l.outers[key] = nil, false
 }
 
 func (l *multiLogOuter) Output(m *LogMessage) {
