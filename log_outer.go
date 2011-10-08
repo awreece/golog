@@ -18,6 +18,7 @@ import (
 
 type LogOuter interface {
 	Output(*LogMessage)
+	// TODO This doesn't belong here.
 	FailNow()
 }
 
