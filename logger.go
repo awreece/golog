@@ -15,3 +15,12 @@ type Logger interface {
 	// the result.
 	Logc(level int, closure func() string)
 }
+
+// A FailLogger is a Logger with the addition FailNow() function, which flushes
+// the Logger and performs some action. The action performed by FailNow() is 
+// deliberately unspecified, but could include os.Exit(1) or 
+// testing.(*T).FailNow().
+type FailLogger interface {
+	Logger
+	FailNow()
+}
