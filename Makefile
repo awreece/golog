@@ -2,7 +2,7 @@ include $(GOROOT)/src/Make.inc
 
 TARG=golog
 GOFILES=\
-	outers.go\
+	log_outer.go\
 	golog.go\
 	internal.go\
 	vmodules.go\
