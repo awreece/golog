@@ -20,6 +20,14 @@ type LevelLogger struct {
 	FailLogger
 }
 
+func NewLevelLogger(f FailLogger) *LevelLogger {
+	return &LevelLogger{f}
+}
+
+func NewDefaultLevelLogger() *LevelLogger {
+	return &LevelLogger{NewDefaultFailLogger()}
+}
+
 // Formats the message with metadata. The format is: 
 // LEVEL HH:MM:SS:NANOSC LOC] MESSAGE
 func makeLogClosure(level int, msg func() string) func() *LogMessage {
