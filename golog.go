@@ -52,3 +52,10 @@ func Fatalc(closure func() string) {
 	Global.Fatalc(closure)
 }
 
+func StartTestLogging(t TestController) {
+	defaultLogOuters.AddLogOuter("testing", NewTestLogOuter(t))
+}
+
+func StopTestLogging() {
+	defaultLogOuters.RemoveLogOuter("testing")
+}
