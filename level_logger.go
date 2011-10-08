@@ -5,11 +5,12 @@ import (
 )
 
 type LevelLogger struct {
-	Logger
+	// TODO Can we get away with just a Logger?
+	FailLogger
 }
 
 func (l *LevelLogger) logCommon(level int, closure func() string) {
-	// TODO: Add prefix, timestamp, etc.
+	// TODO Add prefix, timestamp, etc.
 	l.Logc(level, closure)
 }
 
