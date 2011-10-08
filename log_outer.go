@@ -25,8 +25,9 @@ func formatLogMessage(m *LogMessage, insertNewline bool) string {
 	var buf bytes.Buffer
 	buf.WriteString(levelStrings[int(proto.GetInt32(m.Level))])
 	t := time.NanosecondsToLocalTime(proto.GetInt64(m.Nanoseconds))
-	buf.WriteString(t.Format(" 15:04:05.000000 "))
+	buf.WriteString(t.Format(" 15:04:05.000000"))
 	if m.Location != nil {
+		buf.WriteString(" ")
 		l := *m.Location
 		if l.Package != nil {
 			buf.WriteString(*l.Package)
