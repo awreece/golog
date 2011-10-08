@@ -11,13 +11,6 @@ import (
 	"time"
 )
 
-const (
-	INFO = iota
-	WARNING
-	ERROR
-	FATAL
-)
-
 // TODO: Pass in time as an arg so we can check it earlier?
 // TODO: Accept func, package as args or rename file to location to be more 
 // reusable?
@@ -32,8 +25,6 @@ func makePrefix(buf *bytes.Buffer, msg string, file string, line int) {
 	buf.WriteString(strconv.Itoa(line))
 	buf.WriteString("] ")
 }
-
-var levelStrings []string = []string{"I", "W", "E", "F"}
 
 func internalLogc(level int, c func() string, skip int) {
 	closure := func() string {
