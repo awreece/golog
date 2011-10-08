@@ -1,7 +1,9 @@
 package golog
 
 import (
+	"bytes"
 	"fmt"
+	"time"
 )
 
 const (
@@ -18,9 +20,26 @@ type LevelLogger struct {
 	FailLogger
 }
 
+// Formats the message with metadata. The format is: 
+// LEVEL HH:MM:SS:NANOSC LOC] MESSAGE
+func makeLogClosure(level int, ns int64, location string, msg func() string) func() string {
+	return func() string {
+		var buf bytes.Buffer
+		buf.WriteString(levelStrings[level])
+		t := time.NanosecondsToLocalTime(ns)
+		buf.WriteString(t.Format(" 15:04:05.000000 "))
+		// TODO Write file and line?
+		buf.WriteString(location)
+		buf.WriteString("] ")
+		buf.WriteString(msg())
+		return buf.String()
+	}
+}
+
 func (l *LevelLogger) logCommon(level int, closure func() string) {
-	// TODO Add prefix, timestamp, etc.
-	l.Logc(level, closure)
+	ns := time.Nanoseconds()
+	// TODO Get location?
+	l.Logc(level, makeLogClosure(level, ns, "", closure))
 }
 
 func (l *LevelLogger) Info(vals ...interface{}) {
