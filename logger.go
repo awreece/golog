@@ -34,6 +34,10 @@ type loggerImpl struct {
 	// This is a reference type so we can add log writers before having 
 	// parsed flag_minloglevel.
 	minloglevel *int
-	vmoduleLevelsMap
 }
 
+func (l *loggerImpl) Log(level int, closure func() string) {
+	if level >= *l.minloglevel {
+		l.Println(closure())
+	}
+}
