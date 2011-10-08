@@ -2,10 +2,11 @@ include $(GOROOT)/src/Make.inc
 
 TARG=golog
 GOFILES=\
-	log_outer.go\
-	vmodules.go\
-	logger.go\
+	golog.go\
 	level_logger.go\
+	logger.go\
+	log_outer.go\
 	multi_log_outer.go\
+	vmodules.go\
 
 include $(GOROOT)/src/Make.pkg
