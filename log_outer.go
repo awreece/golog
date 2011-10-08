@@ -43,6 +43,10 @@ func (f *fileLogOuter) FailNow() {
 	os.Exit(1)
 }
 
+func NewFileLogOuter(f *os.File) LogOuter {
+	return &fileLogOuter{f}
+}
+
 // We want to allow an abitrary testing framework.
 type TestController interface {
 	// We will assume that testers insert newlines in manner similar to 
@@ -66,4 +70,8 @@ func (t* testLogOuter) Println(s string) {
 			t.Log(s)
 		}
 	}
+}
+
+func NewTestLogOuter(t TestController) LogOuter {
+	return &testLogOuter{t}
 }
