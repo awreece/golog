@@ -40,18 +40,20 @@ func (l *multiLogOuter) RemoveLogOuter(key string) {
 }
 
 func (l *multiLogOuter) Output(m *LogMessage) {
+	// TODO Grab mutex.
 	for _, outer := range l.outers {
 		outer.Output(m)
 	}
 }
 
 func (l *multiLogOuter) FailNow() {
+	// TODO Grab mutex.
 	for _, outer := range l.outers {
 		outer.FailNow()
 	}
 }
 
-var defaultLogOuters multiLogOuter
+var defaultLogOuters multiLogOuter = multiLogOuter{make(map[string]LogOuter)}
 
 func init() {
 	flag.Var(&defaultLogOuters, "vlog.logfile", "Log to given file - can "+
