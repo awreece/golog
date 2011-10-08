@@ -39,7 +39,7 @@ func makeLogClosure(level int, ns int64, location string, msg func() string) fun
 func (l *LevelLogger) logCommon(level int, closure func() string) {
 	ns := time.Nanoseconds()
 	// TODO Get location?
-	l.Logc(level, makeLogClosure(level, ns, "", closure))
+	l.Log(level, makeLogClosure(level, ns, "", closure))
 }
 
 func (l *LevelLogger) Info(vals ...interface{}) {
