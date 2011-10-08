@@ -21,6 +21,32 @@ type LogOuter interface {
 	FailNow()
 }
 
+func formatLogMessage(m *LogMessage) string {
+	var buf bytes.Buffer
+	buf.WriteString(levelStrings[int(proto.GetInt32(m.Level))])
+	t := time.NanosecondsToLocalTime(proto.GetInt64(m.Nanoseconds))
+	buf.WriteString(t.Format(" 15:04:05.000000 "))
+	if m.Location != nil {
+		l := *m.Location
+		if l.Package != nil {
+			buf.WriteString(*l.Package)
+		}
+		if l.File != nil {
+			buf.WriteString(*l.File)
+		}
+		if l.Function != nil {
+			buf.WriteString(*l.Function)
+		}
+		if l.Line != nil {
+			buf.WriteString(strconv.Itoa(
+				int(proto.GetInt32(l.Line))))
+		}
+	}
+	buf.WriteString("] ")
+	buf.WriteString(proto.GetString(m.Message))
+	return buf.String()
+}
+
 type fileLogOuter struct {
 	// TODO Insert mutex?
 	*os.File
