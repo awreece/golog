@@ -11,6 +11,7 @@ package golog
 import (
 	"bytes"
 	"goprotobuf.googlecode.com/hg/proto"
+	"io"
 	"os"
 	"strconv"
 	"time"
@@ -52,26 +53,26 @@ func formatLogMessage(m *LogMessage, insertNewline bool) string {
 	return buf.String()
 }
 
-type fileLogOuter struct {
+type writerLogOuter struct {
 	// TODO Insert mutex?
-	*os.File
+	// TODO When we no longer need failnow, only require io.Writer.
+	io.WriteCloser
 }
 
-func (f *fileLogOuter) Output(m *LogMessage) {
+func (f *writerLogOuter) Output(m *LogMessage) {
 	// TODO Grab mutex?
 	// Make sure to insert a newline.
-	f.WriteString(formatLogMessage(m, true))
-	f.Sync()
+	f.Write([]byte(formatLogMessage(m, true)))
 }
 
-func (f *fileLogOuter) FailNow() {
+func (f *writerLogOuter) FailNow() {
 	// TODO Grab mutex?
 	f.Close()
 	os.Exit(1)
 }
 
-func NewFileLogOuter(f *os.File) LogOuter {
-	return &fileLogOuter{f}
+func NewWriterLogOuter(f io.WriteCloser) LogOuter {
+	return &writerLogOuter{f}
 }
 
 // We want to allow an abitrary testing framework.

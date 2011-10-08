@@ -22,7 +22,7 @@ func (l *MultiLogOuter) Set(name string) bool {
 				": ", err))
 		return false
 	} else {
-		l.AddLogOuter(name, NewFileLogOuter(file))
+		l.AddLogOuter(name, NewWriterLogOuter(file))
 		return true
 	}
 
