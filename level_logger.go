@@ -1,8 +1,8 @@
 package golog
 
 import (
-	"bytes"
 	"fmt"
+	"goprotobuf.googlecode.com/hg/proto"
 	"time"
 )
 
@@ -22,24 +22,21 @@ type LevelLogger struct {
 
 // Formats the message with metadata. The format is: 
 // LEVEL HH:MM:SS:NANOSC LOC] MESSAGE
-func makeLogClosure(level int, ns int64, location string, msg func() string) func() string {
-	return func() string {
-		var buf bytes.Buffer
-		buf.WriteString(levelStrings[level])
-		t := time.NanosecondsToLocalTime(ns)
-		buf.WriteString(t.Format(" 15:04:05.000000 "))
-		// TODO Write file and line?
-		buf.WriteString(location)
-		buf.WriteString("] ")
-		buf.WriteString(msg())
-		return buf.String()
+func makeLogClosure(level int, msg func() string) func() *LogMessage {
+	// Evaluate this early.
+	ns := time.Nanoseconds()
+
+	return func() *LogMessage {
+		return &LogMessage{
+			Level: proto.Int(level),
+			Message: proto.String(msg()),
+			Nanoseconds: proto.Int64(ns),
+		}
 	}
 }
 
 func (l *LevelLogger) logCommon(level int, closure func() string) {
-	ns := time.Nanoseconds()
-	// TODO Get location?
-	l.Log(level, makeLogClosure(level, ns, "", closure))
+	l.Log(level, makeLogClosure(level, closure))
 }
 
 func (l *LevelLogger) Info(vals ...interface{}) {

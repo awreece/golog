@@ -9,12 +9,15 @@
 package golog
 
 import (
+	"bytes"
+	"goprotobuf.googlecode.com/hg/proto"
 	"os"
+	"strconv"
+	"time"
 )
 
 type LogOuter interface {
-	// Println guarantees a newline and flushes output.
-	Println(string)
+	Output(*LogMessage)
 	FailNow()
 }
 
@@ -23,8 +26,9 @@ type fileLogOuter struct {
 	*os.File
 }
 
-func (f *fileLogOuter) Println(s string) {
+func (f *fileLogOuter) Output(m *LogMessage) {
 	// TODO Grab mutex?
+	s := proto.GetString(m.Message)
 	l := len(s)
 	if l > 0 {
 		if s[l-1] == '\n' {
@@ -59,12 +63,13 @@ type testLogOuter struct {
 	TestController
 }
 
-func (t* testLogOuter) Println(s string) {
+func (t *testLogOuter) Output(m *LogMessage) {
+	s := proto.GetString(m.Message)
 	l := len(s)
 	if l > 0 {
 		// Since testers insert newlines, we strip the newline
 		// in our string.
-		if s[l -1] == '\n' {
+		if s[l-1] == '\n' {
 			t.Log(s[:l-1])
 		} else {
 			t.Log(s)

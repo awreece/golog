@@ -37,9 +37,9 @@ func (l *multiLogOuter) AddDefaultLogTester(t TestController) {
 	l.outers = append(l.outers, &testLogOuter{t})
 }
 
-func (l *multiLogOuter) Println(s string) {
+func (l *multiLogOuter) Output(m *LogMessage) {
 	for _, outer := range l.outers {
-		outer.Println(s)
+		outer.Output(m)
 	}
 }
 

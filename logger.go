@@ -17,7 +17,7 @@ var flag_minloglevel = flag.Int("vlog.minloglevel", INFO,
 type Logger interface {
 	// If the message is to be logged, evaluates the closure and outputs
 	// the result.
-	Log(level int, closure func() string)
+	Log(level int, closure func() *LogMessage)
 }
 
 // A FailLogger is a Logger with the addition FailNow() function, which flushes
@@ -36,8 +36,8 @@ type loggerImpl struct {
 	minloglevel *int
 }
 
-func (l *loggerImpl) Log(level int, closure func() string) {
+func (l *loggerImpl) Log(level int, closure func() *LogMessage) {
 	if level >= *l.minloglevel {
-		l.Println(closure())
+		l.Output(closure())
 	}
 }
