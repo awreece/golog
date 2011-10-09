@@ -35,17 +35,31 @@ type LogOuter interface {
 }
 
 func renderLogLocation(buf *bytes.Buffer, l *LogLocation) {
-	// TODO Intelligently delim these fields.
-	if len(l.Package) > 0 {
+	packPresent := len(l.Package) > 0
+	funcPresent := len(l.Function) > 0
+	filePresent := len(l.Function) > 0
+	linePresent := l.Line > 0
+
+	// TODO This logic is terrifying.
+	if packPresent {
 		buf.WriteString(l.Package)
 	}
-	if len(l.Function) > 0 {
+	if funcPresent {
+		if packPresent {
+			buf.WriteString(".")
+		}
 		buf.WriteString(l.Function)
 	}
-	if len(l.File) > 0 {
+	if packPresent || funcPresent {
+		buf.WriteString("/")
+	}
+	if filePresent {
 		buf.WriteString(l.File)
 	}
-	if l.Line > 0 {
+	if linePresent {
+		if filePresent {
+			buf.WriteString(":")
+		}
 		buf.WriteString(strconv.Itoa(l.Line))
 	}
 }
