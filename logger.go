@@ -30,6 +30,8 @@ type FailLogger interface {
 	FailNow()
 }
 
+var DefaultLogger FailLogger = &loggerImpl{&defaultLogOuters, flag_minloglevel}
+
 func NewLogger(outer LogOuter, minloglevel int) Logger {
 	return NewFailLogger(outer, minloglevel)
 }
@@ -39,13 +41,11 @@ func NewFailLogger(outer LogOuter, minloglevel int) FailLogger {
 }
 
 func NewDefaultFailLogger() FailLogger {
-	// TODO Don't create new FailLoggers, use global FailLogger?
-	return &loggerImpl{&defaultLogOuters, flag_minloglevel}
+	return DefaultLogger
 }
 
 func NewDefaultLogger() Logger {
-	// TODO Don't create new FailLoggers, use global FailLogger?
-	return &loggerImpl{&defaultLogOuters, flag_minloglevel}
+	return DefaultLogger
 }
 
 type loggerImpl struct {
