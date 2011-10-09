@@ -42,10 +42,18 @@ func formatLogMessage(m *LogMessage, insertNewline bool) string {
 	if m.Location != nil {
 		buf.WriteString(" ")
 		l := *m.Location
-		buf.WriteString(l.Package)
-		buf.WriteString(l.File)
-		buf.WriteString(l.Function)
-		buf.WriteString(strconv.Itoa(l.Line))
+		if len(l.Package) > 0 {
+			buf.WriteString(l.Package)
+		}
+		if len(l.File) > 0 {
+			buf.WriteString(l.File)
+		}
+		if len(l.Function) > 0 {
+			buf.WriteString(l.Function)
+		}
+		if l.Line > 0 {
+			buf.WriteString(strconv.Itoa(l.Line))
+		}
 	}
 	buf.WriteString("] ")
 	buf.WriteString(m.Message)
