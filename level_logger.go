@@ -29,6 +29,7 @@ func FullLocation(skip int) *LogLocation {
 	if !ok {
 		return nil
 	} else {
+		// TODO Make sure this is compiler agnostic.
 		funcParts := strings.SplitN(runtime.FuncForPC(pc).Name(), ".", 2)
 		return &LogLocation{
 			Package: funcParts[0],
