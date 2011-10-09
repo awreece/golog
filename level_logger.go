@@ -2,6 +2,9 @@ package golog
 
 import (
 	"fmt"
+	"path"
+	"runtime"
+	"strings"
 	"time"
 )
 
@@ -25,9 +28,26 @@ type levelLoggerImpl struct {
 	getLocation func(skip int) *LogLocation
 }
 
-func NoLocation (skip int) *LogLocation { return nil }
+func NoLocation(skip int) *LogLocation { return nil }
 
-func NewLevelLogger(l Logger, locFunc func (int) *LogLocation) LevelLogger {
+func FullLocation(skip int) *LogLocation {
+	pc, file, line, ok := runtime.Caller(skip + 1)
+	if !ok {
+		return nil
+	} else {
+		funcParts := strings.SplitN(runtime.FuncForPC(pc).Name(), ".", 2)
+		return &LogLocation{
+			Package: funcParts[0],
+			File: path.Base(file),
+			Function: funcParts[1],
+			Line: line,
+		}
+	}
+
+	panic("Flow never reaches here, this mollifies the compiler")
+}
+
+func NewLevelLogger(l Logger, locFunc func(int) *LogLocation) LevelLogger {
 	return &levelLoggerImpl{l, locFunc}
 }
 
@@ -45,7 +65,7 @@ func (l *levelLoggerImpl) makeLogClosure(level int, msg func() string) func() *L
 			Level:       level,
 			Message:     msg(),
 			Nanoseconds: ns,
-			Location: location,
+			Location:    location,
 		}
 	}
 }
