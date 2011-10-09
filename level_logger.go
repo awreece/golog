@@ -2,7 +2,6 @@ package golog
 
 import (
 	"fmt"
-	"goprotobuf.googlecode.com/hg/proto"
 	"time"
 )
 
@@ -36,9 +35,9 @@ func makeLogClosure(level int, msg func() string) func() *LogMessage {
 
 	return func() *LogMessage {
 		return &LogMessage{
-			Level: proto.Int(level),
-			Message: proto.String(msg()),
-			Nanoseconds: proto.Int64(ns),
+			Level: level,
+			Message: msg(),
+			Nanoseconds: ns,
 		}
 	}
 }

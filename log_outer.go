@@ -10,12 +10,25 @@ package golog
 
 import (
 	"bytes"
-	"goprotobuf.googlecode.com/hg/proto"
 	"io"
 	"os"
 	"strconv"
 	"time"
 )
+
+type LogLocation struct {
+	Package  string
+	File     string
+	Function string
+	Line     int
+}
+
+type LogMessage struct {
+	Level       int
+	Nanoseconds int64
+	Message     string
+	Location    *LogLocation
+}
 
 type LogOuter interface {
 	Output(*LogMessage)
@@ -25,28 +38,19 @@ type LogOuter interface {
 
 func formatLogMessage(m *LogMessage, insertNewline bool) string {
 	var buf bytes.Buffer
-	buf.WriteString(levelStrings[int(proto.GetInt32(m.Level))])
-	t := time.NanosecondsToLocalTime(proto.GetInt64(m.Nanoseconds))
+	buf.WriteString(levelStrings[m.Level])
+	t := time.NanosecondsToLocalTime(m.Nanoseconds)
 	buf.WriteString(t.Format(" 15:04:05.000000"))
 	if m.Location != nil {
 		buf.WriteString(" ")
 		l := *m.Location
-		if l.Package != nil {
-			buf.WriteString(*l.Package)
-		}
-		if l.File != nil {
-			buf.WriteString(*l.File)
-		}
-		if l.Function != nil {
-			buf.WriteString(*l.Function)
-		}
-		if l.Line != nil {
-			buf.WriteString(strconv.Itoa(
-				int(proto.GetInt32(l.Line))))
-		}
+		buf.WriteString(l.Package)
+		buf.WriteString(l.File)
+		buf.WriteString(l.Function)
+		buf.WriteString(strconv.Itoa(l.Line))
 	}
 	buf.WriteString("] ")
-	buf.WriteString(proto.GetString(m.Message))
+	buf.WriteString(m.Message)
 	if insertNewline {
 		buf.WriteString("\n")
 	}
