@@ -27,8 +27,8 @@ type levelLoggerImpl struct {
 
 func NoLocation (skip int) *LogLocation { return nil }
 
-func NewLevelLogger(l Logger) LevelLogger {
-	return &levelLoggerImpl{l, NoLocation}
+func NewLevelLogger(l Logger, locFunc func (int) *LogLocation) LevelLogger {
+	return &levelLoggerImpl{l, locFunc}
 }
 
 var DefaultLevelLogger LevelLogger = &levelLoggerImpl{DefaultLogger, NoLocation}
