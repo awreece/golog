@@ -4,7 +4,14 @@ import (
 	"os"
 )
 
-var Global LevelLogger = &levelLoggerImpl{ DefaultLogger, NoLocation }
+const (
+	INFO = iota
+	WARNING
+	ERROR
+	FATAL
+)
+
+var Global LevelLogger = DefaultLevelLogger
 
 func exitNow() {
 	os.Exit(1)

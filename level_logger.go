@@ -8,13 +8,6 @@ import (
 	"time"
 )
 
-const (
-	INFO = iota
-	WARNING
-	ERROR
-	FATAL
-)
-
 type LevelLogger interface {
 	Log(level int, vals ...interface{})
 	Logf(level int, f string, vals ...interface{})
