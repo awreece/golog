@@ -46,7 +46,7 @@ func NewLevelLogger(l Logger, locFunc func(int) *LogLocation) LevelLogger {
 	return &levelLoggerImpl{l, locFunc}
 }
 
-var DefaultLevelLogger LevelLogger = &levelLoggerImpl{DefaultLogger, NoLocation}
+var DefaultLevelLogger LevelLogger = &levelLoggerImpl{DefaultLogger, FullLocation}
 
 func (l *levelLoggerImpl) makeLogClosure(level int, msg func() string) func() *LogMessage {
 	// Evaluate this early.
