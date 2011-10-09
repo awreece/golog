@@ -12,8 +12,6 @@ const (
 	FATAL
 )
 
-var levelStrings []string = []string{"I", "W", "E", "F"}
-
 type LevelLogger struct {
 	// TODO Can we get away with just a Logger?
 	FailLogger

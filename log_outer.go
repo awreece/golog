@@ -34,6 +34,8 @@ type LogOuter interface {
 	Output(*LogMessage)
 }
 
+var levelStrings []string = []string{"I", "W", "E", "F"}
+
 func formatLogMessage(m *LogMessage, insertNewline bool) string {
 	var buf bytes.Buffer
 	buf.WriteString(levelStrings[m.Level])
