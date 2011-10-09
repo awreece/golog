@@ -11,7 +11,6 @@ package golog
 import (
 	"bytes"
 	"io"
-	"os"
 	"strconv"
 	"time"
 )
@@ -59,20 +58,13 @@ func formatLogMessage(m *LogMessage, insertNewline bool) string {
 
 type writerLogOuter struct {
 	// TODO Insert mutex?
-	// TODO When we no longer need failnow, only require io.Writer.
-	io.WriteCloser
+	io.Writer
 }
 
 func (f *writerLogOuter) Output(m *LogMessage) {
 	// TODO Grab mutex?
 	// Make sure to insert a newline.
 	f.Write([]byte(formatLogMessage(m, true)))
-}
-
-func (f *writerLogOuter) FailNow() {
-	// TODO Grab mutex?
-	f.Close()
-	os.Exit(1)
 }
 
 func NewWriterLogOuter(f io.WriteCloser) LogOuter {
