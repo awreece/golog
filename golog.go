@@ -1,61 +1,74 @@
 package golog
 
-var Global *LevelLogger = &LevelLogger{
+import (
+	"os"
+)
+
+var Global LevelLogger = &levelLoggerImpl{
 	&loggerImpl{&defaultLogOuters, flag_minloglevel},
 }
 
+func exitNow() {
+	os.Exit(1)
+}
+
 func Info(vals ...interface{}) {
-	Global.Info(vals...)
+	Global.Log(INFO, vals...)
 }
 
 func Infof(f string, args ...interface{}) {
-	Global.Infof(f, args...)
+	Global.Logf(INFO, f, args...)
 }
 
 func Infoc(closure func() string) {
-	Global.Warningc(closure)
+	Global.Logc(INFO, closure)
 }
 
 func Warning(vals ...interface{}) {
-	Global.Warning(vals...)
+	Global.Log(WARNING, vals...)
 }
 
 func Warningf(f string, args ...interface{}) {
-	Global.Warningf(f, args...)
+	Global.Logf(WARNING, f, args...)
 }
 
 func Warningc(closure func() string) {
-	Global.Errorc(closure)
+	Global.Logc(WARNING, closure)
 }
 
 func Error(vals ...interface{}) {
-	Global.Error(vals...)
+	Global.Log(ERROR, vals...)
 }
 
 func Errorf(f string, args ...interface{}) {
-	Global.Errorf(f, args...)
+	Global.Logf(ERROR, f, args...)
 }
 
 func Errorc(closure func() string) {
-	Global.Errorc(closure)
+	Global.Logc(ERROR, closure)
 }
 
 func Fatal(vals ...interface{}) {
-	Global.Fatal(vals...)
+	Global.Log(FATAL, vals...)
+	exitNow()
 }
 
 func Fatalf(f string, args ...interface{}) {
-	Global.Fatalf(f, args...)
+	Global.Logf(FATAL, f, args...)
+	exitNow()
 }
 
 func Fatalc(closure func() string) {
-	Global.Fatalc(closure)
+	Global.Logc(FATAL, closure)
+	exitNow()
 }
 
 func StartTestLogging(t TestController) {
 	defaultLogOuters.AddLogOuter("testing", NewTestLogOuter(t))
+	// TODO Replace exitNow
 }
 
 func StopTestLogging() {
 	defaultLogOuters.RemoveLogOuter("testing")
+	// TODO Replace exitNow
 }

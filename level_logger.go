@@ -12,17 +12,22 @@ const (
 	FATAL
 )
 
-type LevelLogger struct {
-	// TODO Can we get away with just a Logger?
+type LevelLogger interface {
+	Log(level int, vals ...interface{})
+	Logf(level int, f string, vals ...interface{})
+	Logc(level int, closure func() string)
+}
+
+type levelLoggerImpl struct {
 	FailLogger
 }
 
-func NewLevelLogger(f FailLogger) *LevelLogger {
-	return &LevelLogger{f}
+func NewLevelLogger(f FailLogger) LevelLogger {
+	return &levelLoggerImpl{f}
 }
 
-func NewDefaultLevelLogger() *LevelLogger {
-	return &LevelLogger{NewDefaultFailLogger()}
+func NewDefaultLevelLogger() LevelLogger {
+	return &levelLoggerImpl{NewDefaultFailLogger()}
 }
 
 // Formats the message with metadata. The format is: 
@@ -33,64 +38,25 @@ func makeLogClosure(level int, msg func() string) func() *LogMessage {
 
 	return func() *LogMessage {
 		return &LogMessage{
-			Level: level,
-			Message: msg(),
+			Level:       level,
+			Message:     msg(),
 			Nanoseconds: ns,
 		}
 	}
 }
 
-func (l *LevelLogger) logCommon(level int, closure func() string) {
+func (l *levelLoggerImpl) logCommon(level int, closure func() string) {
 	l.Log(level, makeLogClosure(level, closure))
 }
 
-func (l *LevelLogger) Info(vals ...interface{}) {
-	l.logCommon(INFO, func() string { return fmt.Sprint(vals...) })
+func (l *levelLoggerImpl) Log(level int, msg ...interface{}) {
+	l.logCommon(level, func() string { return fmt.Sprint(msg...) })
 }
 
-func (l *LevelLogger) Infof(f string, args ...interface{}) {
-	l.logCommon(INFO, func() string { return fmt.Sprintf(f, args...) })
+func (l *levelLoggerImpl) Logf(level int, f string, msg ...interface{}) {
+	l.logCommon(level, func() string { return fmt.Sprintf(f, msg...) })
 }
 
-func (l *LevelLogger) Infoc(closure func() string) {
-	l.logCommon(INFO, closure)
-}
-
-func (l *LevelLogger) Warning(vals ...interface{}) {
-	l.logCommon(WARNING, func() string { return fmt.Sprint(vals...) })
-}
-
-func (l *LevelLogger) Warningf(f string, args ...interface{}) {
-	l.logCommon(WARNING, func() string { return fmt.Sprintf(f, args...) })
-}
-
-func (l *LevelLogger) Warningc(closure func() string) {
-	l.logCommon(WARNING, closure)
-}
-
-func (l *LevelLogger) Error(vals ...interface{}) {
-	l.logCommon(ERROR, func() string { return fmt.Sprint(vals...) })
-}
-
-func (l *LevelLogger) Errorf(f string, args ...interface{}) {
-	l.logCommon(ERROR, func() string { return fmt.Sprintf(f, args...) })
-}
-
-func (l *LevelLogger) Errorc(closure func() string) {
-	l.logCommon(ERROR, closure)
-}
-
-func (l *LevelLogger) Fatal(vals ...interface{}) {
-	l.logCommon(FATAL, func() string { return fmt.Sprint(vals...) })
-	l.FailNow()
-}
-
-func (l *LevelLogger) Fatalf(f string, args ...interface{}) {
-	l.logCommon(FATAL, func() string { return fmt.Sprintf(f, args...) })
-	l.FailNow()
-}
-
-func (l *LevelLogger) Fatalc(closure func() string) {
-	l.logCommon(FATAL, closure)
-	l.FailNow()
+func (l *levelLoggerImpl) Logc(level int, closure func() string) {
+	l.logCommon(level, closure)
 }
