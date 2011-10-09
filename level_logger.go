@@ -19,7 +19,7 @@ type LevelLogger interface {
 }
 
 type levelLoggerImpl struct {
-	FailLogger
+	Logger
 	// TODO comment this
 	// Skip 0 refers to the function calling getLocation.
 	getLocation func(skip int) *LogLocation
@@ -27,8 +27,8 @@ type levelLoggerImpl struct {
 
 func NoLocation (skip int) *LogLocation { return nil }
 
-func NewLevelLogger(f FailLogger) LevelLogger {
-	return &levelLoggerImpl{f, NoLocation}
+func NewLevelLogger(l Logger) LevelLogger {
+	return &levelLoggerImpl{l, NoLocation}
 }
 
 var DefaultLevelLogger LevelLogger = &levelLoggerImpl{DefaultLogger, NoLocation}
