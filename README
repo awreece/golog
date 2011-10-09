@@ -15,5 +15,4 @@ package specific LevelLogger with their own presets or the default (flag based)
 presets.
 
 NOTE: The package is not quite stable. Most exported methods and types will
-remain exported, but may change. The plan is to add a MulitLogger and refactor
-so that LogOuter does not need to support a FailNow.
+remain exported, but may change.
