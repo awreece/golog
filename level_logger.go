@@ -26,9 +26,7 @@ func NewLevelLogger(f FailLogger) LevelLogger {
 	return &levelLoggerImpl{f}
 }
 
-func NewDefaultLevelLogger() LevelLogger {
-	return &levelLoggerImpl{NewDefaultFailLogger()}
-}
+var DefaultLevelLogger LevelLogger = &levelLoggerImpl{DefaultLogger}
 
 func makeLogClosure(level int, msg func() string) func() *LogMessage {
 	// Evaluate this early.
