@@ -46,14 +46,6 @@ func (l *MultiLogOuter) Output(m *LogMessage) {
 	}
 }
 
-func (l *MultiLogOuter) FailNow() {
-	// TODO Grab mutex.
-	// TODO: This doesn't belong here. We want a MuliFailLogger.
-	for _, outer := range l.outers {
-		outer.FailNow()
-	}
-}
-
 var defaultLogOuters MultiLogOuter = MultiLogOuter{make(map[string]LogOuter)}
 
 func init() {
