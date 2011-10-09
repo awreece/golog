@@ -30,8 +30,6 @@ func NewDefaultLevelLogger() LevelLogger {
 	return &levelLoggerImpl{NewDefaultFailLogger()}
 }
 
-// Formats the message with metadata. The format is: 
-// LEVEL HH:MM:SS:NANOSC LOC] MESSAGE
 func makeLogClosure(level int, msg func() string) func() *LogMessage {
 	// Evaluate this early.
 	ns := time.Nanoseconds()
