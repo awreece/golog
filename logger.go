@@ -2,7 +2,6 @@ package golog
 
 import (
 	"flag"
-	"os"
 )
 
 // Prints everything this level and above. (Set to SILENT to disable).
@@ -24,10 +23,14 @@ type Logger interface {
 	FailNow()
 }
 
-var DefaultLogger Logger = &loggerImpl{&defaultLogOuters, flag_minloglevel}
+var DefaultLogger Logger = &loggerImpl{
+	&defaultLogOuters,
+	flag_minloglevel,
+	exitNow,
+}
 
-func NewLogger(outer LogOuter, minloglevel int) Logger {
-	return &loggerImpl{outer, &minloglevel}
+func NewLogger(outer LogOuter, minloglevel int, failFunc func()) Logger {
+	return &loggerImpl{outer, &minloglevel, failFunc}
 }
 
 func NewDefaultLogger() Logger {
@@ -39,6 +42,7 @@ type loggerImpl struct {
 	// This is a reference type so we can add log writers before having 
 	// parsed flag_minloglevel.
 	minloglevel *int
+	failFunc    func()
 }
 
 func (l *loggerImpl) Log(level int, closure func() *LogMessage) {
@@ -48,5 +52,6 @@ func (l *loggerImpl) Log(level int, closure func() *LogMessage) {
 }
 
 func (l *loggerImpl) FailNow() {
-	os.Exit(1)
+	// TODO Flush log outer?
+	l.failFunc()
 }
