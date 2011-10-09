@@ -70,10 +70,10 @@ func Fatalc(closure func() string) {
 
 func StartTestLogging(t TestController) {
 	defaultLogOuters.AddLogOuter("testing", NewTestLogOuter(t))
-	// TODO Replace exitNow
+	DefaultLogger.(*loggerImpl).failFunc = func () { t.FailNow() }
 }
 
 func StopTestLogging() {
 	defaultLogOuters.RemoveLogOuter("testing")
-	// TODO Replace exitNow
+	DefaultLogger.(*loggerImpl).failFunc = exitNow
 }
