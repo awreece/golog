@@ -71,7 +71,7 @@ func (l *levelLoggerImpl) makeLogClosure(level int, msg func() string) func() *L
 }
 
 func (l *levelLoggerImpl) logCommon(level int, closure func() string) {
-	l.Log(level, l.makeLogClosure(level, closure))
+	l.Logger.Log(level, l.makeLogClosure(level, closure))
 }
 
 func (l *levelLoggerImpl) Log(level int, msg ...interface{}) {
