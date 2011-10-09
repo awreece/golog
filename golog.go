@@ -55,17 +55,17 @@ func Errorc(closure func() string) {
 
 func Fatal(vals ...interface{}) {
 	Global.Log(FATAL, vals...)
-	exitNow()
+	Global.FailNow()
 }
 
 func Fatalf(f string, args ...interface{}) {
 	Global.Logf(FATAL, f, args...)
-	exitNow()
+	Global.FailNow()
 }
 
 func Fatalc(closure func() string) {
 	Global.Logc(FATAL, closure)
-	exitNow()
+	Global.FailNow()
 }
 
 func StartTestLogging(t TestController) {
