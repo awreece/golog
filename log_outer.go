@@ -10,6 +10,7 @@ package golog
 
 import (
 	"bytes"
+	"fmt"
 	"io"
 	"strconv"
 	"time"
@@ -33,11 +34,9 @@ type LogOuter interface {
 	Output(*LogMessage)
 }
 
-var levelStrings []string = []string{"I", "W", "E", "F"}
-
 func formatLogMessage(m *LogMessage, insertNewline bool) string {
 	var buf bytes.Buffer
-	buf.WriteString(levelStrings[m.Level])
+	buf.WriteString(fmt.Sprintf("L%d", m.Level))
 	t := time.NanosecondsToLocalTime(m.Nanoseconds)
 	buf.WriteString(t.Format(" 15:04:05.000000"))
 	if m.Location != nil {
