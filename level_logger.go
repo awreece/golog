@@ -20,29 +20,38 @@ type LevelLogger interface {
 
 type levelLoggerImpl struct {
 	FailLogger
+	// TODO comment this
+	// Skip 0 refers to the function calling getLocation.
+	getLocation func(skip int) *LogLocation
 }
+
+func NoLocation (skip int) *LogLocation { return nil }
 
 func NewLevelLogger(f FailLogger) LevelLogger {
-	return &levelLoggerImpl{f}
+	return &levelLoggerImpl{f, NoLocation}
 }
 
-var DefaultLevelLogger LevelLogger = &levelLoggerImpl{DefaultLogger}
+var DefaultLevelLogger LevelLogger = &levelLoggerImpl{DefaultLogger, NoLocation}
 
-func makeLogClosure(level int, msg func() string) func() *LogMessage {
+func (l *levelLoggerImpl) makeLogClosure(level int, msg func() string) func() *LogMessage {
 	// Evaluate this early.
 	ns := time.Nanoseconds()
+	// TODO Be less brittle.
+	// Skip over makeLogClosure, logCommon, and Log
+	location := l.getLocation(3)
 
 	return func() *LogMessage {
 		return &LogMessage{
 			Level:       level,
 			Message:     msg(),
 			Nanoseconds: ns,
+			Location: location,
 		}
 	}
 }
 
 func (l *levelLoggerImpl) logCommon(level int, closure func() string) {
-	l.Log(level, makeLogClosure(level, closure))
+	l.Log(level, l.makeLogClosure(level, closure))
 }
 
 func (l *levelLoggerImpl) Log(level int, msg ...interface{}) {

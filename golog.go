@@ -4,9 +4,7 @@ import (
 	"os"
 )
 
-var Global LevelLogger = &levelLoggerImpl{
-	&loggerImpl{&defaultLogOuters, flag_minloglevel},
-}
+var Global LevelLogger = &levelLoggerImpl{ DefaultLogger, NoLocation }
 
 func exitNow() {
 	os.Exit(1)
