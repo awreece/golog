@@ -42,6 +42,7 @@ func formatLogMessage(m *LogMessage, insertNewline bool) string {
 	if m.Location != nil {
 		buf.WriteString(" ")
 		l := *m.Location
+		// TODO Intelligently delim these fields.
 		if len(l.Package) > 0 {
 			buf.WriteString(l.Package)
 		}
