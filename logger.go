@@ -29,11 +29,17 @@ func exitNow() {
 	os.Exit(1)
 }
 
+// Construct a new Logger that writes any messages of level minloglevel or
+// higher to the given LogOuter. Calls to Logger.FailNow() call the provided
+// failFunc closure.
 func NewLogger(outer LogOuter, minloglevel int, failFunc func()) Logger {
 	return &loggerImpl{outer, &minloglevel, failFunc}
 }
 
+// Return the default log outer. Note: calls to SetMinLogLevel will affect 
+// all instances of the DefaultLogger.
 func NewDefaultLogger() Logger {
+	// TODO Use only one global default logger, pass a ptr to it.
 	return &loggerImpl{
 		NewDefaultMultiLogOuter(),
 		flag_minloglevel,
