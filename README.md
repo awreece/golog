@@ -70,18 +70,17 @@ should be done by writing a proper `LogOuter`.
 
 Understanding this package
 ==========================
-
-There are 3 important objects in this package.
-	LogOuter: Outputs a LogMessage to (file, testing.T, network, xml, etc)
-	Logger: Decides whether on not to generate output
-	LevelLogger: Easier interface for Logger.
-
-In practice, the user is encouraged to use the LevelLogger as an entrypoint into
-the package. The provided Global LevelLogger is set up to have easy defaults
-and to be easily configurable with flags and the AddLogFile and the
-{Start,Stop}TestLogging functions. As an alternative, the user can create
-package specific LevelLogger with their own presets or the default (flag based)
-presets.
-
-NOTE: The package is not quite stable. Most exported methods and types will
-remain exported, but may change.
+This package was designed to be highly modular, with different interfaces for
+each logical component. The important types are:
+* A `LogMessage` is a logged message with associated metadata.
+* A `LogOuter` controls outputing a `LogMessage`.
+* A `MultiLogOuter` multiplexes an outputted message to a set of keyed
+  `LogOuters`. The associated `MultiLogOuterFlag` automatically add logfiles to
+  the associated set of `LogOuters`.
+* A `Logger` decides whether or not to log a message, and if so renders the
+  message and outputs it.
+* A `LevelLogger` is a wrapper for a logger that generates a closure to return
+  a `LogMessage` with the associate metadata. The `LevelLogger` is the first
+  easily usable entrypoint into this package.
+* A `PackageLogger` has a set of functions to be quickly useful, and is the
+  expected entry point into this package.
