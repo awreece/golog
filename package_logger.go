@@ -72,7 +72,9 @@ func (l *PackageLogger) Fatal(msg ...interface{}) {
 }
 func (l *PackageLogger) Fatalf(fmt string, vals ...interface{}) {
 	l.LogDepth(FATAL, printfClosure(fmt, vals...), 1)
+	l.FailNow()
 }
 func (l *PackageLogger) Fatalc(closure func() string) {
 	l.LogDepth(FATAL, closure, 1)
+	l.FailNow()
 }
