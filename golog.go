@@ -9,67 +9,54 @@ const (
 
 var Global *PackageLogger = NewDefaultPackageLogger()
 
-func Info(vals ...interface{}) {
-	Global.Log(INFO, vals...)
+
+func Info(msg ...interface{}) {
+	Global.LogDepth(INFO, printClosure(msg...), 1)
 }
 
-func Infof(f string, args ...interface{}) {
-	Global.Logf(INFO, f, args...)
+func Infof(fmt string, vals ...interface{}) {
+	Global.LogDepth(INFO, printfClosure(fmt, vals...), 1)
 }
 
 func Infoc(closure func() string) {
-	Global.Logc(INFO, closure)
+	Global.LogDepth(INFO, closure, 1)
 }
 
-func Warning(vals ...interface{}) {
-	Global.Log(WARNING, vals...)
+func Warning(msg ...interface{}) {
+	Global.LogDepth(WARNING, printClosure(msg...), 1)
 }
 
-func Warningf(f string, args ...interface{}) {
-	Global.Logf(WARNING, f, args...)
+func Warningf(fmt string, vals ...interface{}) {
+	Global.LogDepth(WARNING, printfClosure(fmt, vals...), 1)
 }
 
 func Warningc(closure func() string) {
-	Global.Logc(WARNING, closure)
+	Global.LogDepth(WARNING, closure, 1)
 }
 
-func Error(vals ...interface{}) {
-	Global.Log(ERROR, vals...)
+func Error(msg ...interface{}) {
+	Global.LogDepth(ERROR, printClosure(msg...), 1)
 }
 
-func Errorf(f string, args ...interface{}) {
-	Global.Logf(ERROR, f, args...)
+func Errorf(fmt string, vals ...interface{}) {
+	Global.LogDepth(ERROR, printfClosure(fmt, vals...), 1)
 }
 
 func Errorc(closure func() string) {
-	Global.Logc(ERROR, closure)
+	Global.LogDepth(ERROR, closure, 1)
 }
 
-func Fatal(vals ...interface{}) {
-	Global.Log(FATAL, vals...)
+func Fatal(msg ...interface{}) {
+	Global.LogDepth(FATAL, printClosure(msg...), 1)
 	Global.FailNow()
 }
 
-func Fatalf(f string, args ...interface{}) {
-	Global.Logf(FATAL, f, args...)
-	Global.FailNow()
+func Fatalf(fmt string, vals ...interface{}) {
+	Global.LogDepth(FATAL, printfClosure(fmt, vals...), 1)
 }
 
 func Fatalc(closure func() string) {
-	Global.Logc(FATAL, closure)
-	Global.FailNow()
-}
-
-func Log(level int, vals ...interface{}) {
-	Global.Log(level, vals...)
-}
-
-func Logf(level int, f string, args ...interface{}) {
-	Global.Logf(level, f, args...)
-}
-
-func Logc(level int, closure func() string) {
-	Global.Logc(level, closure)
+	Global.LogDepth(FATAL, closure, 1)
 }
 
 func StartTestLogging(t TestController) {
