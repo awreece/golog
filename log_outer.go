@@ -74,6 +74,7 @@ func renderLogLocation(buf *bytes.Buffer, l *LogLocation) {
 	}
 }
 
+// Format the message as a string, optionally inserting a newline.
 func formatLogMessage(m *LogMessage, insertNewline bool) string {
 	var buf bytes.Buffer
 	buf.WriteString(fmt.Sprintf("L%d", m.Level))
