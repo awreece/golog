@@ -61,7 +61,7 @@ Advanced usage
 --------------
 This package is highly modular and configurable; different components can be
 plugged in to modify the behavior. For example, to speed up logging an advanced
-user could try creating a `LevelLogger` using the `NoLocation` function, or
+user could try creating a `LocationLogger` using the `NoLocation` function, or
 even create a custom location function.
 
 Advanced users can further take advantage of the modularity of the package to 
@@ -85,7 +85,7 @@ each logical component. The important types are:
 	the message and outputs it.
 
 *	A `LocationLogger` is a wrapper for a `Logger` that generates a closure
-	to return a `LogMessage` with the associate metadat and is the first 
+	to return a `LogMessage` with the associate metadata and is the first 
 	easily usable entrypoint into this package.
 
 *	A `PackageLogger` has a set of functions designed be quickly useful
