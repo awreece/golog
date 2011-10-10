@@ -11,7 +11,7 @@ const (
 	FATAL
 )
 
-var Global LevelLogger = DefaultLevelLogger
+var Global PackageLogger = NewDefaultPackageLogger()
 
 func exitNow() {
 	os.Exit(1)
@@ -69,11 +69,9 @@ func Fatalc(closure func() string) {
 }
 
 func StartTestLogging(t TestController) {
-	defaultLogOuters.AddLogOuter("testing", NewTestLogOuter(t))
-	DefaultLogger.(*loggerImpl).failFunc = func () { t.FailNow() }
+	Global.StartTestLogging(t)
 }
 
 func StopTestLogging() {
-	defaultLogOuters.RemoveLogOuter("testing")
-	DefaultLogger.(*loggerImpl).failFunc = exitNow
+	Global.StopTestLogging()
 }
