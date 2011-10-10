@@ -31,6 +31,7 @@ type locationLoggerImpl struct {
 func NoLocation(skip int) *LogLocation { return nil }
 
 // Walks up the stack skip frames and returns the LogLocation for that frame.
+// TODO(awreece) Provide a arg to select which fields to produce?
 func FullLocation(skip int) *LogLocation {
 	pc, file, line, ok := runtime.Caller(skip + 1)
 	if !ok {
@@ -52,7 +53,8 @@ func FullLocation(skip int) *LogLocation {
 // Returns a new LocationLogger wrapping the associated logger, and using
 // the provided function to generate LogLocations. The locFunc should walk
 // up the stack skip frames and generate the LogLocation for that function
-// call.
+// call. For example:
+//	log := NewLocationLogger(NewDefaultLogger(), NoLocation)
 func NewLocationLogger(l Logger, locFunc func(int) *LogLocation) LocationLogger {
 	return &locationLoggerImpl{l, locFunc}
 }
