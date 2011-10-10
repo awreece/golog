@@ -50,9 +50,23 @@ and `StopTestLogging()` at the end. For example:
 		Foo()
 	}
 
-While in test logging mode, calls to `golog.Fatal()` (and
-`DefaultLogger.FailNow()`) will call `testing.(*T).FailNow()` rather than
+While in test logging mode, calls to `Fatal()` (and `DefaultLogger.FailNow()`)
+will call `testing.(*T).FailNow()` rather than
 exiting the program abruptly.
+
+Another common way to use this pacakge is to create a local `PackageLogger`.
+This can either be declared on the package level or passed in by value.
+
+Advanced usage
+--------------
+This package is highly modular and configurable; different components can be
+plugged in to modify the behavior. For example, to speed up logging an advanced
+user could try creating a `LevelLogger` using the `NoLocation` function, or
+even create a custom location function.
+
+Advanced users can further take advantage of the modularity of the package to 
+implement and control individual parts. For example, logging in XML format 
+should be done by writing a proper `LogOuter`.
 
 Understanding this package
 ==========================
