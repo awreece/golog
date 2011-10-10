@@ -6,12 +6,25 @@ import (
 	"os"
 )
 
+// A MultiLogOuter is a LogOuter with multiple keyed LogOuters. All functions
+// should be safe to call in a multi-threaded environment.
 type MultiLogOuter interface {
 	LogOuter
+	// Add the LogOuter, associating it with the key.
 	AddLogOuter(key string, outer LogOuter)
+	// Remove the LogOuter associated with the key.
 	RemoveLogOuter(key string)
 }
 
+// A MultiLogOuter than can also be used as a flag for setting logfiles. 
+// For example, it is possible to use a logger other than default via:
+// 	var myOuter MultiLogOuterFlag = NewMultiLogOuter()
+// 	
+// 	func init() {
+// 		flag.Var(myOuter, 
+// 			"mypack.logfile", 
+// 			"Log to file - can be provided multiple times")
+// 	}
 type MultiLogOuterFlag interface {
 	MultiLogOuter
 	flag.Value
