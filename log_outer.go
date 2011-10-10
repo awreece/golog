@@ -12,6 +12,7 @@ import (
 	"bytes"
 	"fmt"
 	"io"
+	"os"
 	"strconv"
 	"time"
 )
@@ -92,8 +93,18 @@ func (f *writerLogOuter) Output(m *LogMessage) {
 	f.Write([]byte(formatLogMessage(m, true)))
 }
 
-func NewWriterLogOuter(f io.WriteCloser) LogOuter {
+func NewWriterLogOuter(f io.Writer) LogOuter {
 	return &writerLogOuter{f}
+}
+
+func NewFileLogOuter(filename string) (LogOuter, os.Error) {
+	if file, err := os.Create(filename); err != nil {
+		return nil, err
+	} else {
+		return NewWriterLogOuter(file), nil
+	}
+
+	panic("Code never reaches here, this mollifies the compiler.")
 }
 
 // We want to allow an abitrary testing framework.
