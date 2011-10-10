@@ -81,3 +81,5 @@ easily usable entrypoint into this package.
 and is the expected entry point into this package.
 */
 package golog
+
+// TODO(awreece) Can README.md or doc.go cite the other?
