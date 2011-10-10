@@ -33,10 +33,10 @@ func FullLocation(skip int) *LogLocation {
 		// TODO Make sure this is compiler agnostic.
 		funcParts := strings.SplitN(runtime.FuncForPC(pc).Name(), ".", 2)
 		return &LogLocation{
-			Package: funcParts[0],
-			File: path.Base(file),
+			Package:  funcParts[0],
+			File:     path.Base(file),
 			Function: funcParts[1],
-			Line: line,
+			Line:     line,
 		}
 	}
 

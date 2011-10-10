@@ -91,4 +91,3 @@ func RemoveLogOuter(key string) {
 func SetMinLogLevel(level int) {
 	Global.SetMinLogLevel(level)
 }
-
