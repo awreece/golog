@@ -9,10 +9,11 @@ import (
 )
 
 type LevelLogger interface {
-	FailNow()
 	Log(level int, vals ...interface{})
 	Logf(level int, f string, vals ...interface{})
 	Logc(level int, closure func() string)
+	FailNow()
+	SetMinLogLevel(int)
 }
 
 type levelLoggerImpl struct {

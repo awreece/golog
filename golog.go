@@ -88,3 +88,7 @@ func RemoveLogOuter(key string) {
 	Global.RemoveLogOuter(key)
 }
 
+func SetMinLogLevel(level int) {
+	Global.SetMinLogLevel(level)
+}
+
