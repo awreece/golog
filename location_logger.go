@@ -10,18 +10,14 @@ import (
 
 type LocationLogger interface {
 	LogDepth(level int, closure func() string, depth int)
+	Log(int, ...interface{})
+	Logf(int, string, ...interface{})
+	Logc(int, func() string)
 	FailNow()
 	SetMinLogLevel(int)
 }
 
-type LevelLogger interface {
-	Log(level int, vals ...interface{})
-	Logf(level int, f string, vals ...interface{})
-	Logc(level int, closure func() string)
-	LocationLogger
-}
-
-type levelLoggerImpl struct {
+type locationLoggerImpl struct {
 	Logger
 	// TODO comment this
 	// Skip 0 refers to the function calling getLocation.
@@ -48,11 +44,11 @@ func FullLocation(skip int) *LogLocation {
 	panic("Flow never reaches here, this mollifies the compiler")
 }
 
-func NewLevelLogger(l Logger, locFunc func(int) *LogLocation) LevelLogger {
-	return &levelLoggerImpl{l, locFunc}
+func NewLocationLogger(l Logger, locFunc func(int) *LogLocation) LocationLogger {
+	return &locationLoggerImpl{l, locFunc}
 }
 
-func (l *levelLoggerImpl) makeLogClosure(level int, msg func() string, skip int) func() *LogMessage {
+func (l *locationLoggerImpl) makeLogClosure(level int, msg func() string, skip int) func() *LogMessage {
 	// Evaluate this early.
 	ns := time.Nanoseconds()
 	location := l.getLocation(skip + 1)
@@ -67,18 +63,18 @@ func (l *levelLoggerImpl) makeLogClosure(level int, msg func() string, skip int)
 	}
 }
 
-func (l *levelLoggerImpl) LogDepth(level int, closure func() string, depth int) {
-	l.Logger.Log(level, l.makeLogClosure(level, closure, depth + 1))
+func (l *locationLoggerImpl) LogDepth(level int, closure func() string, depth int) {
+	l.Logger.Log(level, l.makeLogClosure(level, closure, depth+1))
 }
 
-func (l *levelLoggerImpl) Log(level int, msg ...interface{}) {
+func (l *locationLoggerImpl) Log(level int, msg ...interface{}) {
 	l.LogDepth(level, func() string { return fmt.Sprint(msg...) }, 1)
 }
 
-func (l *levelLoggerImpl) Logf(level int, f string, msg ...interface{}) {
-	l.LogDepth(level, func() string { return fmt.Sprintf(f, msg...) }, 1)
+func (l *locationLoggerImpl) Logf(level int, format string, msg ...interface{}) {
+	l.LogDepth(level, func() string { return fmt.Sprintf(format, msg...) }, 1)
 }
 
-func (l *levelLoggerImpl) Logc(level int, closure func() string) {
+func (l *locationLoggerImpl) Logc(level int, closure func() string) {
 	l.LogDepth(level, closure, 1)
 }

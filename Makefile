@@ -3,7 +3,7 @@ include $(GOROOT)/src/Make.inc
 TARG=golog
 GOFILES=\
 	golog.go\
-	level_logger.go\
+	location_logger.go\
 	logger.go\
 	log_outer.go\
 	multi_log_outer.go\

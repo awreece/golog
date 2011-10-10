@@ -1,7 +1,7 @@
 package golog
 
 type PackageLogger interface {
-	LevelLogger
+	LocationLogger
 	StartTestLogging(TestController)
 	StopTestLogging()
 	AddLogOuter(key string, outer LogOuter)
@@ -9,7 +9,7 @@ type PackageLogger interface {
 }
 
 type packageLoggerImpl struct {
-	LevelLogger
+	LocationLogger
 	MultiLogOuter
 	failFunc func()
 }
@@ -18,7 +18,7 @@ func newPackageLoggerCommon(outer MultiLogOuter, minloglevel_flag *int,
 failFunc func(), locFunc func(skip int) *LogLocation) PackageLogger {
 	ret := &packageLoggerImpl{failFunc: failFunc, MultiLogOuter: outer}
 
-	ret.LevelLogger = NewLevelLogger(
+	ret.LocationLogger = NewLocationLogger(
 		&loggerImpl{outer, minloglevel_flag, func() { ret.failFunc() }},
 		FullLocation)
 
