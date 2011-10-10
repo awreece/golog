@@ -93,7 +93,7 @@ func (f *writerLogOuter) Output(m *LogMessage) {
 	f.Write([]byte(formatLogMessage(m, true)))
 }
 
-func NewWriterLogOuter(f io.WriteCloser) LogOuter {
+func NewWriterLogOuter(f io.Writer) LogOuter {
 	return &writerLogOuter{f}
 }
 
