@@ -12,6 +12,11 @@ type MultiLogOuter interface {
 	RemoveLogOuter(key string)
 }
 
+type MultiLogOuterFlag interface {
+	MultiLogOuter
+	flag.Value
+}
+
 type multiLogOuterImpl struct {
 	// TODO Add mutex.
 	outers map[string]LogOuter
@@ -52,9 +57,9 @@ func (l *multiLogOuterImpl) Output(m *LogMessage) {
 	}
 }
 
-var defaultLogOuters MultiLogOuter = &multiLogOuterImpl{make(map[string]LogOuter)}
+var defaultLogOuters MultiLogOuterFlag = &multiLogOuterImpl{make(map[string]LogOuter)}
 
-func NewDefaultMultiLogOuter() MultiLogOuter {
+func NewDefaultMultiLogOuter() MultiLogOuterFlag {
 	return &multiLogOuterImpl{
 		outers: map[string]LogOuter{"default": defaultLogOuters},
 	}
@@ -62,7 +67,7 @@ func NewDefaultMultiLogOuter() MultiLogOuter {
 
 func init() {
 	// TODO Find a way to export this?
-	flag.Var(defaultLogOuters.(*multiLogOuterImpl), "golog.logfile",
+	flag.Var(defaultLogOuters, "golog.logfile",
 		"Log to given file - can be provided multiple times to log "+
 			"to multiple files")
 }
