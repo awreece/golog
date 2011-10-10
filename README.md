@@ -12,8 +12,8 @@ Introductory usage
 ------------------
 
 The easiest way to start using this package is to use the `Global` 
-`LevelLogger` and the exported functions `Info`, `Warning`, `Error`, and
-`Fatal` (and the `Infof` and `Infoc` methods of that family). For example:
+`LevelLogger` and the exported wrapper functions `Info`, `Warning`, `Error`, 
+and `Fatal` (and the `Infof` and `Infoc` methods of that family). For example:
 
 	package mypackage
 
@@ -21,7 +21,36 @@ The easiest way to start using this package is to use the `Global`
 
 	func Foo() {
 		golog.Info("Hello, world")
+		golog.Warningf("Error %d", 4)
+		golog.Errorc(func() { return slowMakePrettyString() })
+		golog.Fatal("Error opening file:", err)
 	}
+
+The `Global` `LevelLogger` output to default files set by flags. For example,
+to log to `stderr` and to `temp.log`, invoke the binary with the additional
+flags `--golog.logfile=/dev/stderr --golog.logfile=temp.log`.
+
+This package also makes it easy to log to a testing harness in addition to
+files. To do this, invoke `StartTestLogging(t)` at the start of every test
+and `StopTestLogging()` at the end. For example:
+	
+	package mypackage
+	
+	import (
+		"github.com/awreece/golog"
+		"testing"
+	)
+
+	func TestFoo(t *testing.T) {
+		golog.StartTestLogging(t); defer golog.StopTestLogging()
+
+		// Test the Foo() function.
+		Foo()
+	}
+
+While in test logging mode, calls to `golog.Fatal()` (and
+`DefaultLogger.FailNow())` will call `testing.(*T).FailNow()` rather than
+exiting the program abruptly.
 
 Understanding this package
 ==========================
