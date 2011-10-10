@@ -23,6 +23,7 @@ type multiLogOuterImpl struct {
 }
 
 func (l *multiLogOuterImpl) String() string {
+	// TODO better string
 	return fmt.Sprint("\"", l.outers, "\"")
 }
 
