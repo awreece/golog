@@ -40,6 +40,9 @@ type LogOuter interface {
 
 // Render a formatted LogLocation to the buffer.
 func renderLogLocation(buf *bytes.Buffer, l *LogLocation) {
+	if l == nil {
+		return
+	}
 	packPresent := len(l.Package) > 0
 	funcPresent := len(l.Function) > 0
 	filePresent := len(l.Function) > 0
