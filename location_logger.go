@@ -8,6 +8,9 @@ import (
 	"time"
 )
 
+// A LocationLogger wraps useful methods for outputting strings by creating
+// a LogMessage with the relevant metadata.
+// TODO(awreece) Split into multiple interfaces!
 type LocationLogger interface {
 	LogDepth(level int, closure func() string, depth int)
 	Log(int, ...interface{})
@@ -19,19 +22,21 @@ type LocationLogger interface {
 
 type locationLoggerImpl struct {
 	Logger
-	// TODO comment this
+	// TODO(awreece) comment this
 	// Skip 0 refers to the function calling getLocation.
 	getLocation func(skip int) *LogLocation
 }
 
+// Return a nil LogLocation.
 func NoLocation(skip int) *LogLocation { return nil }
 
+// Walks up the stack skip frames and retuns the LogLocation 
 func FullLocation(skip int) *LogLocation {
 	pc, file, line, ok := runtime.Caller(skip + 1)
 	if !ok {
 		return nil
 	} else {
-		// TODO Make sure this is compiler agnostic.
+		// TODO(awreece) Make sure this is compiler agnostic.
 		funcParts := strings.SplitN(runtime.FuncForPC(pc).Name(), ".", 2)
 		return &LogLocation{
 			Package:  funcParts[0],
