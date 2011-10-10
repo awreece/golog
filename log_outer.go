@@ -99,6 +99,7 @@ type writerLogOuter struct {
 
 func (f *writerLogOuter) Output(m *LogMessage) {
 	// TODO(awreece) Grab mutex?
+	// TODO(awreece) Keep writing until all bytes written!
 	// Make sure to insert a newline.
 	f.Write([]byte(formatLogMessage(m, true)))
 }
