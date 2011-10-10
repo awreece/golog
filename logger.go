@@ -21,6 +21,7 @@ type Logger interface {
 	// the result.
 	Log(level int, closure func() *LogMessage)
 	FailNow()
+	SetMinLogLevel(level int)
 }
 
 var DefaultLogger Logger = &loggerImpl{
@@ -58,4 +59,8 @@ func (l *loggerImpl) Log(level int, closure func() *LogMessage) {
 func (l *loggerImpl) FailNow() {
 	// TODO Flush log outer?
 	l.failFunc()
+}
+
+func (l *loggerImpl) SetMinLogLevel(level int) {
+	*l.minloglevel = level
 }
