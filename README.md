@@ -7,6 +7,10 @@ customize log output via custom implementations of the interfaces provided in
 the package. In addition, all logged messages are wrapped in closures and are
 only evaluated and rendered if they will be outputed.
 
+You can install this package via:
+
+	goinstall github.com/awreece/golog
+
 Using this package
 ==================
 
@@ -24,7 +28,7 @@ example:
 	func Foo() {
 		golog.Info("Hello, world")
 		golog.Warningf("Error %d", 4)
-		golog.Errorc(func() { return slowMakePrettyString() })
+		golog.Errorc(func() { return verySlowStringFunction() })
 		golog.Fatal("Error opening file:", err)
 	}
 
