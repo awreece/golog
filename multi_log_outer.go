@@ -58,12 +58,16 @@ func (l *multiLogOuterImpl) Output(m *LogMessage) {
 	}
 }
 
-var defaultLogOuters MultiLogOuterFlag = &multiLogOuterImpl{make(map[string]LogOuter)}
+var defaultLogOuters MultiLogOuterFlag = NewMultiLogOuter()
 
 func NewDefaultMultiLogOuter() MultiLogOuterFlag {
 	return &multiLogOuterImpl{
 		outers: map[string]LogOuter{"default": defaultLogOuters},
 	}
+}
+
+func NewMultiLogOuter() MultiLogOuterFlag {
+	return &multiLogOuterImpl{make(map[string]LogOuter)}
 }
 
 func init() {
