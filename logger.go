@@ -34,7 +34,11 @@ func NewLogger(outer LogOuter, minloglevel int, failFunc func()) Logger {
 }
 
 func NewDefaultLogger() Logger {
-	return DefaultLogger
+	return &loggerImpl{
+		NewDefaultMultiLogOuter(),
+		flag_minloglevel,
+		exitNow,
+	}
 }
 
 type loggerImpl struct {
