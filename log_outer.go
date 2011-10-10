@@ -40,7 +40,9 @@ type LogOuter interface {
 	Output(*LogMessage)
 }
 
-// Render a formatted LogLocation to the buffer.
+// Render a formatted LogLocation to the buffer. If all present, format is 
+// "{pack}.{func}/{file}:{line}". If some fields omitted, intelligently
+// delimits the remaining fields.
 func renderLogLocation(buf *bytes.Buffer, l *LogLocation) {
 	if l == nil {
 		return
