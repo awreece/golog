@@ -5,7 +5,7 @@ import (
 )
 
 // Prints everything this level and above. (Set to SILENT to disable).
-var flag_minloglevel = flag.Int("vlog.minloglevel", INFO,
+var flag_minloglevel = flag.Int("golog.minloglevel", INFO,
 	"Log messages at or above this level. The "+
 		"numbers of severity levels INFO, WARNING, "+
 		"ERROR, and FATAL are 0, 1, 2, and 3, respectively")
