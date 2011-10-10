@@ -30,7 +30,7 @@ type locationLoggerImpl struct {
 // Return a nil LogLocation.
 func NoLocation(skip int) *LogLocation { return nil }
 
-// Walks up the stack skip frames and retuns the LogLocation 
+// Walks up the stack skip frames and returns the LogLocation for that frame.
 func FullLocation(skip int) *LogLocation {
 	pc, file, line, ok := runtime.Caller(skip + 1)
 	if !ok {
@@ -49,6 +49,10 @@ func FullLocation(skip int) *LogLocation {
 	panic("Flow never reaches here, this mollifies the compiler")
 }
 
+// Returns a new LocationLogger wrapping the associated logger, and using
+// the provided function to generate LogLocations. The locFunc should walk
+// up the stack skip frames and generate the LogLocation for that function
+// call.
 func NewLocationLogger(l Logger, locFunc func(int) *LogLocation) LocationLogger {
 	return &locationLoggerImpl{l, locFunc}
 }
