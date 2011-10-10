@@ -21,7 +21,11 @@ type Logger interface {
 	// If the message is to be logged, evaluates the closure and outputs
 	// the result.
 	Log(level int, closure func() *LogMessage)
+	// Fail and halt standard control flow.
 	FailNow()
+	// All future calls to log with log only if the message is at 
+	// level or higher.
+	// TODO(awreece) Put in different interface to keep Logger agnostic?
 	SetMinLogLevel(level int)
 }
 
