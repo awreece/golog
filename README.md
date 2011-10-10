@@ -49,7 +49,7 @@ and `StopTestLogging()` at the end. For example:
 	}
 
 While in test logging mode, calls to `golog.Fatal()` (and
-`DefaultLogger.FailNow())` will call `testing.(*T).FailNow()` rather than
+`DefaultLogger.FailNow()`) will call `testing.(*T).FailNow()` rather than
 exiting the program abruptly.
 
 Understanding this package
