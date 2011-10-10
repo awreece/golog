@@ -104,10 +104,13 @@ func (f *writerLogOuter) Output(m *LogMessage) {
 	f.Write([]byte(formatLogMessage(m, true)))
 }
 
+// Returns a LogOuter wrapping the io.Writer.
 func NewWriterLogOuter(f io.Writer) LogOuter {
 	return &writerLogOuter{f}
 }
 
+// Returns a LogOuter wrapping the file, or an error if the file cannot be
+// opened.
 func NewFileLogOuter(filename string) (LogOuter, os.Error) {
 	if file, err := os.Create(filename); err != nil {
 		return nil, err
@@ -136,6 +139,7 @@ func (t *testLogOuter) Output(m *LogMessage) {
 	t.Log(formatLogMessage(m, false))
 }
 
+// Return a LogOuter wrapping the TestControlller.
 func NewTestLogOuter(t TestController) LogOuter {
 	return &testLogOuter{t}
 }
