@@ -1,22 +1,18 @@
 package golog
 
-type PackageLogger interface {
-	LocationLogger
-	StartTestLogging(TestController)
-	StopTestLogging()
-	AddLogOuter(key string, outer LogOuter)
-	RemoveLogOuter(key string)
-}
+import (
+	"fmt"
+)
 
-type packageLoggerImpl struct {
+type PackageLogger struct {
 	LocationLogger
 	MultiLogOuter
 	failFunc func()
 }
 
 func newPackageLoggerCommon(outer MultiLogOuter, minloglevel_flag *int,
-failFunc func(), locFunc func(skip int) *LogLocation) PackageLogger {
-	ret := &packageLoggerImpl{failFunc: failFunc, MultiLogOuter: outer}
+failFunc func(), locFunc func(skip int) *LogLocation) *PackageLogger {
+	ret := &PackageLogger{failFunc: failFunc, MultiLogOuter: outer}
 
 	ret.LocationLogger = NewLocationLogger(
 		&loggerImpl{outer, minloglevel_flag, func() { ret.failFunc() }},
@@ -25,7 +21,7 @@ failFunc func(), locFunc func(skip int) *LogLocation) PackageLogger {
 	return ret
 }
 
-func NewDefaultPackageLogger() PackageLogger {
+func NewDefaultPackageLogger() *PackageLogger {
 	return newPackageLoggerCommon(
 		NewDefaultMultiLogOuter(),
 		flag_minloglevel,
@@ -34,16 +30,65 @@ func NewDefaultPackageLogger() PackageLogger {
 }
 
 func NewPackageLogger(outer MultiLogOuter, minloglevel int,
-failFunc func(), locFunc func(skip int) *LogLocation) PackageLogger {
+failFunc func(), locFunc func(skip int) *LogLocation) *PackageLogger {
 	return newPackageLoggerCommon(outer, &minloglevel, failFunc, locFunc)
 }
 
-func (l *packageLoggerImpl) StartTestLogging(t TestController) {
+func (l *PackageLogger) StartTestLogging(t TestController) {
 	l.MultiLogOuter.AddLogOuter("testing", NewTestLogOuter(t))
 	l.failFunc = func() { t.FailNow() }
 }
 
-func (l *packageLoggerImpl) StopTestLogging() {
+func (l *PackageLogger) StopTestLogging() {
 	l.MultiLogOuter.RemoveLogOuter("testing")
 	l.failFunc = exitNow
+}
+
+func printClosure(msg ...interface{}) func() string {
+	return func() string {
+		return fmt.Sprint(msg...)
+	}
+}
+func printfClosure(format string, vals ...interface{}) func() string {
+	return func() string {
+		return fmt.Sprintf(format, vals...)
+	}
+}
+
+func (l *PackageLogger) Info(msg ...interface{}) {
+	l.LogDepth(INFO, printClosure(msg...), 1)
+}
+func (l *PackageLogger) Infof(fmt string, vals ...interface{}) {
+	l.LogDepth(INFO, printfClosure(fmt, vals...), 1)
+}
+func (l *PackageLogger) Infoc(closure func() string) {
+	l.LogDepth(INFO, closure, 1)
+}
+func (l *PackageLogger) Warning(msg ...interface{}) {
+	l.LogDepth(WARNING, printClosure(msg...), 1)
+}
+func (l *PackageLogger) Warningf(fmt string, vals ...interface{}) {
+	l.LogDepth(WARNING, printfClosure(fmt, vals...), 1)
+}
+func (l *PackageLogger) Warningc(closure func() string) {
+	l.LogDepth(WARNING, closure, 1)
+}
+func (l *PackageLogger) Error(msg ...interface{}) {
+	l.LogDepth(ERROR, printClosure(msg...), 1)
+}
+func (l *PackageLogger) Errorf(fmt string, vals ...interface{}) {
+	l.LogDepth(ERROR, printfClosure(fmt, vals...), 1)
+}
+func (l *PackageLogger) Errorc(closure func() string) {
+	l.LogDepth(ERROR, closure, 1)
+}
+func (l *PackageLogger) Fatal(msg ...interface{}) {
+	l.LogDepth(FATAL, printClosure(msg...), 1)
+	l.FailNow()
+}
+func (l *PackageLogger) Fatalf(fmt string, vals ...interface{}) {
+	l.LogDepth(FATAL, printfClosure(fmt, vals...), 1)
+}
+func (l *PackageLogger) Fatalc(closure func() string) {
+	l.LogDepth(FATAL, closure, 1)
 }

@@ -7,7 +7,7 @@ const (
 	FATAL
 )
 
-var Global PackageLogger = NewDefaultPackageLogger()
+var Global *PackageLogger = NewDefaultPackageLogger()
 
 func Info(vals ...interface{}) {
 	Global.Log(INFO, vals...)
