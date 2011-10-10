@@ -17,6 +17,7 @@ import (
 	"time"
 )
 
+// The location in the source of a log message.
 type LogLocation struct {
 	Package  string
 	Function string
@@ -32,16 +33,19 @@ type LogMessage struct {
 }
 
 type LogOuter interface {
+	// Output a LogMessage (to a file, to stderr, to a tester, etc). Output
+	// must be safe to call from multiple threads.
 	Output(*LogMessage)
 }
 
+// Render a formatted LogLocation to the buffer.
 func renderLogLocation(buf *bytes.Buffer, l *LogLocation) {
 	packPresent := len(l.Package) > 0
 	funcPresent := len(l.Function) > 0
 	filePresent := len(l.Function) > 0
 	linePresent := l.Line > 0
 
-	// TODO This logic is terrifying.
+	// TODO(awreece) This logic is terrifying.
 	if packPresent {
 		buf.WriteString(l.Package)
 	}
