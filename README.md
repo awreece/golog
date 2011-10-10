@@ -1,6 +1,15 @@
+About this package
+==================
+
 This package is designed to support better logging for Go. Specifically, this
 project aims to support different levels of logging and the ability to
 customize log output via custom implementations of the Logger interface.
+
+Using this package
+==================
+
+Understanding this package
+==========================
 
 There are 3 important objects in this package.
 	LogOuter: Outputs a LogMessage to (file, testing.T, network, xml, etc)
