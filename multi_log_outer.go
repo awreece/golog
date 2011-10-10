@@ -27,13 +27,13 @@ func (l *multiLogOuterImpl) String() string {
 }
 
 func (l *multiLogOuterImpl) Set(name string) bool {
-	if file, err := os.Create(name); err != nil {
+	if outer, err := NewFileLogOuter(name); err != nil {
 		os.Stderr.WriteString(
 			fmt.Sprint("Error opening file for logging", name,
 				": ", err))
 		return false
 	} else {
-		l.AddLogOuter(name, NewWriterLogOuter(file))
+		l.AddLogOuter(name, outer)
 		return true
 	}
 
