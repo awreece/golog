@@ -46,6 +46,7 @@ func (l *multiLogOuterImpl) AddLogOuter(key string, outer LogOuter) {
 }
 
 func (l *multiLogOuterImpl) RemoveLogOuter(key string) {
+	// TODO Grab mutex.
 	// TODO Be Go1 compatible. :)
 	l.outers[key] = nil, false
 }
