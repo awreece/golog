@@ -46,9 +46,9 @@ func (l *MultiLogOuter) Output(m *LogMessage) {
 	}
 }
 
-var defaultLogOuters MultiLogOuter = MultiLogOuter{make(map[string]LogOuter)}
+var defaultLogOuters *MultiLogOuter = &MultiLogOuter{make(map[string]LogOuter)}
 
 func init() {
-	flag.Var(&defaultLogOuters, "vlog.logfile", "Log to given file - can "+
+	flag.Var(defaultLogOuters, "golog.logfile", "Log to given file - can "+
 		"be provided multiple times to log to multiple files")
 }

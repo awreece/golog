@@ -24,7 +24,7 @@ type Logger interface {
 }
 
 var DefaultLogger Logger = &loggerImpl{
-	&defaultLogOuters,
+	defaultLogOuters,
 	flag_minloglevel,
 	exitNow,
 }
