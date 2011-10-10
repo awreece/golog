@@ -14,8 +14,8 @@ Introductory usage
 ------------------
 
 The easiest way to start using this package is to use the `Global` 
-`LevelLogger` and the exported wrapper functions `Info`, `Warning`, `Error`, 
-and `Fatal` (and the `Infof` and `Infoc` methods of that family). For example:
+`PackageLogger` and the exported global namespace wrapper functions. For
+example:
 
 	package mypackage
 
@@ -28,7 +28,7 @@ and `Fatal` (and the `Infof` and `Infoc` methods of that family). For example:
 		golog.Fatal("Error opening file:", err)
 	}
 
-The `Global` `LevelLogger` output to default files set by flags. For example,
+The `Global` `PackageLogger` output to default files set by flags. For example,
 to log to `stderr` and to `temp.log`, invoke the binary with the additional
 flags `--golog.logfile=/dev/stderr --golog.logfile=temp.log`.
 
