@@ -1,7 +1,6 @@
 package golog
 
 import (
-	"fmt"
 	"path"
 	"runtime"
 	"strings"
@@ -10,14 +9,9 @@ import (
 
 // A LocationLogger wraps useful methods for outputting strings by creating
 // a LogMessage with the relevant metadata.
-// TODO(awreece) Split into multiple interfaces!
 type LocationLogger interface {
+	Logger
 	LogDepth(level int, closure func() string, depth int)
-	Log(int, ...interface{})
-	Logf(int, string, ...interface{})
-	Logc(int, func() string)
-	FailNow()
-	SetMinLogLevel(int)
 }
 
 type locationLoggerImpl struct {
@@ -81,31 +75,5 @@ func (l *locationLoggerImpl) makeLogClosure(level int, msg func() string, skip i
 }
 
 func (l *locationLoggerImpl) LogDepth(level int, closure func() string, depth int) {
-	l.Logger.Log(level, l.makeLogClosure(level, closure, depth+1))
-}
-
-// Returns a closure that formats the message via a call to fmt.Sprint.
-func printClosure(msg ...interface{}) func() string {
-	return func() string {
-		return fmt.Sprint(msg...)
-	}
-}
-
-// Returns a closure that formats the message via a call to fmt.Sprintf.
-func printfClosure(format string, vals ...interface{}) func() string {
-	return func() string {
-		return fmt.Sprintf(format, vals...)
-	}
-}
-
-func (l *locationLoggerImpl) Log(level int, msg ...interface{}) {
-	l.LogDepth(level, printClosure(msg...), 1)
-}
-
-func (l *locationLoggerImpl) Logf(level int, format string, msg ...interface{}) {
-	l.LogDepth(level, printfClosure(format, msg...), 1)
-}
-
-func (l *locationLoggerImpl) Logc(level int, closure func() string) {
-	l.LogDepth(level, closure, 1)
+	l.Log(level, l.makeLogClosure(level, closure, depth+1))
 }

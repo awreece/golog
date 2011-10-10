@@ -1,5 +1,9 @@
 package golog
 
+import (
+	"fmt"
+)
+
 const (
 	INFO int = iota
 	WARNING
@@ -7,6 +11,7 @@ const (
 	FATAL
 )
 
+// A PackageLogger 
 type PackageLogger struct {
 	LocationLogger
 	MultiLogOuter
@@ -50,6 +55,20 @@ func (l *PackageLogger) StopTestLogging() {
 	l.MultiLogOuter.RemoveLogOuter("testing")
 	// TODO(awreece) Restored to saved failFunc.
 	l.failFunc = ExitError
+}
+
+// Returns a closure that formats the message via a call to fmt.Sprint.
+func printClosure(msg ...interface{}) func() string {
+	return func() string {
+		return fmt.Sprint(msg...)
+	}
+}
+
+// Returns a closure that formats the message via a call to fmt.Sprintf.
+func printfClosure(format string, vals ...interface{}) func() string {
+	return func() string {
+		return fmt.Sprintf(format, vals...)
+	}
 }
 
 // Log the message at level INFO, only formatting if message will be logged.
@@ -119,4 +138,16 @@ func (l *PackageLogger) Fatalf(fmt string, vals ...interface{}) {
 func (l *PackageLogger) Fatalc(closure func() string) {
 	l.LogDepth(FATAL, closure, 1)
 	l.FailNow()
+}
+
+func (l *PackageLogger) Log(level int, msg ...interface{}) {
+	l.LogDepth(level, printClosure(msg...), 1)
+}
+
+func (l *PackageLogger) Logf(level int, format string, msg ...interface{}) {
+	l.LogDepth(level, printfClosure(format, msg...), 1)
+}
+
+func (l *PackageLogger) Logc(level int, closure func() string) {
+	l.LogDepth(level, closure, 1)
 }
