@@ -11,6 +11,24 @@ const (
 	FATAL
 )
 
+type StringLogger interface {
+	Log(...interface{})
+	Logf(string,...interface{})
+	Logc(func()string)
+	Info(...interface{})
+	Infof(string,...interface{})
+	Infoc(func()string)
+	Warning(...interface{})
+	Warningf(string,...interface{})
+	Warningc(func()string)
+	Error(...interface{})
+	Errorf(string,...interface{})
+	Errorc(func()string)
+	Fatal(...interface{})
+	Fatalf(string,...interface{})
+	Fatalc(func()string)
+}
+
 // A PackageLogger 
 type PackageLogger struct {
 	LocationLogger
