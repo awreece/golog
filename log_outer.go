@@ -50,7 +50,7 @@ func renderLogLocation(buf *bytes.Buffer, l *LogLocation) {
 		}
 		buf.WriteString(l.Function)
 	}
-	if packPresent || funcPresent {
+	if (packPresent || funcPresent) && (filePresent || linePresent) {
 		buf.WriteString("/")
 	}
 	if filePresent {
