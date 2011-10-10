@@ -72,15 +72,21 @@ Understanding this package
 ==========================
 This package was designed to be highly modular, with different interfaces for
 each logical component. The important types are:
+
 *	A `LogMessage` is a logged message with associated metadata.
+
 *	A `LogOuter` controls outputing a `LogMessage`.
+
 *	A `MultiLogOuter` multiplexes an outputted message to a set of keyed
 	`LogOuters`. The associated `MultiLogOuterFlag` automatically add 
 	logfiles to the associated set of `LogOuters`.
+
 *	A `Logger` decides whether or not to log a message, and if so renders 
 	the message and outputs it.
+
 *	A `LevelLogger` is a wrapper for a logger that generates a closure to 
 	return a `LogMessage` with the associate metadata. The `LevelLogger` 
 	is the first easily usable entrypoint into this package.
+
 *	A `PackageLogger` has a set of functions to be quickly useful, and is the
 	expected entry point into this package.
