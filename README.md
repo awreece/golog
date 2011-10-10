@@ -8,6 +8,21 @@ customize log output via custom implementations of the Logger interface.
 Using this package
 ==================
 
+Introductory usage
+------------------
+
+The easiest way to start using this package is to use the `Global` 
+`LevelLogger` and the exported functions `Info`, `Warning`, `Error`, and
+`Fatal` (and the `Infof` and `Infoc` methods of that family). For example:
+
+	package mypackage
+
+	import "github.com/awreece/golog"
+
+	func Foo() {
+		golog.Info("Hello, world")
+	}
+
 Understanding this package
 ==========================
 
