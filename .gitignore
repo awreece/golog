@@ -10,4 +10,3 @@ test/times.out
 test/garbage/*.out
 build.out
 test.out
-*.proto
