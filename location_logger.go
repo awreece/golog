@@ -84,12 +84,14 @@ func (l *locationLoggerImpl) LogDepth(level int, closure func() string, depth in
 	l.Logger.Log(level, l.makeLogClosure(level, closure, depth+1))
 }
 
+// Returns a closure that formats the message via a call to fmt.Sprint.
 func printClosure(msg ...interface{}) func() string {
 	return func() string {
 		return fmt.Sprint(msg...)
 	}
 }
 
+// Returns a closure that formats the message via a call to fmt.Sprintf.
 func printfClosure(format string, vals ...interface{}) func() string {
 	return func() string {
 		return fmt.Sprintf(format, vals...)
