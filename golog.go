@@ -79,3 +79,12 @@ func StartTestLogging(t TestController) {
 func StopTestLogging() {
 	Global.StopTestLogging()
 }
+
+func AddLogOuter(key string, outer LogOuter) {
+	Global.AddLogOuter(key, outer)
+}
+
+func RemoveLogOuter(key string) {
+	Global.RemoveLogOuter(key)
+}
+
