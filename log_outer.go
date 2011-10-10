@@ -93,12 +93,12 @@ func formatLogMessage(m *LogMessage, insertNewline bool) string {
 }
 
 type writerLogOuter struct {
-	// TODO Insert mutex?
+	// TODO(awreece) Insert mutex?
 	io.Writer
 }
 
 func (f *writerLogOuter) Output(m *LogMessage) {
-	// TODO Grab mutex?
+	// TODO(awreece) Grab mutex?
 	// Make sure to insert a newline.
 	f.Write([]byte(formatLogMessage(m, true)))
 }
