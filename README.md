@@ -84,9 +84,9 @@ each logical component. The important types are:
 *	A `Logger` decides whether or not to log a message, and if so renders 
 	the message and outputs it.
 
-*	A `LevelLogger` is a wrapper for a logger that generates a closure to 
-	return a `LogMessage` with the associate metadata. The `LevelLogger` 
-	is the first easily usable entrypoint into this package.
+*	A `LocationLogger` is a wrapper for a `Logger` that generates a closure
+	to return a `LogMessage` with the associate metadat and is the first 
+	easily usable entrypoint into this package.
 
-*	A `PackageLogger` has a set of functions to be quickly useful, and is the
-	expected entry point into this package.
+*	A `PackageLogger` has a set of functions designed be quickly useful
+	and is the expected entry point into this package.
