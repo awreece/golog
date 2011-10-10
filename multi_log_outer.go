@@ -31,12 +31,12 @@ type MultiLogOuterFlag interface {
 }
 
 type multiLogOuterImpl struct {
-	// TODO Add mutex.
+	// TODO(awreece) Add mutex.
 	outers map[string]LogOuter
 }
 
 func (l *multiLogOuterImpl) String() string {
-	// TODO better string
+	// TODO(awreece) better string
 	return fmt.Sprint("\"", l.outers, "\"")
 }
 
@@ -55,18 +55,18 @@ func (l *multiLogOuterImpl) Set(name string) bool {
 }
 
 func (l *multiLogOuterImpl) AddLogOuter(key string, outer LogOuter) {
-	// TODO Grab mutex.
+	// TODO(awreece) Grab mutex.
 	l.outers[key] = outer
 }
 
 func (l *multiLogOuterImpl) RemoveLogOuter(key string) {
-	// TODO Grab mutex.
-	// TODO Be Go1 compatible. :)
+	// TODO(awreece) Grab mutex.
+	// TODO(awreece) Be Go1 compatible. :)
 	l.outers[key] = nil, false
 }
 
 func (l *multiLogOuterImpl) Output(m *LogMessage) {
-	// TODO Grab mutex.
+	// TODO(awreece) Grab mutex.
 	for _, outer := range l.outers {
 		outer.Output(m)
 	}
