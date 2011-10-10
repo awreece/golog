@@ -68,6 +68,18 @@ func Fatalc(closure func() string) {
 	Global.FailNow()
 }
 
+func Log(level int, vals ...interface{}) {
+	Global.Log(level, vals...)
+}
+
+func Logf(level int, f string, args ...interface{}) {
+	Global.Logf(level, f, args...)
+}
+
+func Logc(level int, closure func() string) {
+	Global.Logc(level, closure)
+}
+
 func StartTestLogging(t TestController) {
 	Global.StartTestLogging(t)
 }
