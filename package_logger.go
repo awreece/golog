@@ -21,7 +21,7 @@ func NewDefaultPackageLogger() *PackageLogger {
 	return newPackageLoggerCommon(
 		NewDefaultMultiLogOuter(),
 		flag_minloglevel,
-		exitNow,
+		ExitError,
 		FullLocation)
 }
 
@@ -32,12 +32,13 @@ failFunc func(), locFunc func(skip int) *LogLocation) *PackageLogger {
 
 func (l *PackageLogger) StartTestLogging(t TestController) {
 	l.MultiLogOuter.AddLogOuter("testing", NewTestLogOuter(t))
+	// TODO(awreece) Safe old failFunc so we can restore it properly.
 	l.failFunc = func() { t.FailNow() }
 }
 
 func (l *PackageLogger) StopTestLogging() {
 	l.MultiLogOuter.RemoveLogOuter("testing")
-	l.failFunc = exitNow
+	l.failFunc = ExitError
 }
 func (l *PackageLogger) Info(msg ...interface{}) {
 	l.LogDepth(INFO, printClosure(msg...), 1)

@@ -29,7 +29,7 @@ type Logger interface {
 	SetMinLogLevel(level int)
 }
 
-func exitNow() {
+func ExitError() {
 	os.Exit(1)
 }
 
@@ -47,7 +47,7 @@ func NewDefaultLogger() Logger {
 	return &loggerImpl{
 		NewDefaultMultiLogOuter(),
 		flag_minloglevel,
-		exitNow,
+		ExitError,
 	}
 }
 
