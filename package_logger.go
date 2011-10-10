@@ -14,15 +14,7 @@ type packageLoggerImpl struct {
 	failFunc func()
 }
 
-func NewDefaultPackageLogger() PackageLogger {
-	return NewPackageLogger(
-		NewDefaultMultiLogOuter(),
-		flag_minloglevel,
-		exitNow,
-		FullLocation)
-}
-
-func NewPackageLogger(outer MultiLogOuter, minloglevel_flag *int,
+func newPackageLoggerCommon(outer MultiLogOuter, minloglevel_flag *int,
 failFunc func(), locFunc func(skip int) *LogLocation) PackageLogger {
 	ret := &packageLoggerImpl{failFunc: failFunc, MultiLogOuter: outer}
 
@@ -31,6 +23,19 @@ failFunc func(), locFunc func(skip int) *LogLocation) PackageLogger {
 		FullLocation)
 
 	return ret
+}
+
+func NewDefaultPackageLogger() PackageLogger {
+	return newPackageLoggerCommon(
+		NewDefaultMultiLogOuter(),
+		flag_minloglevel,
+		exitNow,
+		FullLocation)
+}
+
+func NewPackageLogger(outer MultiLogOuter, minloglevel int,
+failFunc func(), locFunc func(skip int) *LogLocation) PackageLogger {
+	return newPackageLoggerCommon(outer, &minloglevel, failFunc, locFunc)
 }
 
 func (l *packageLoggerImpl) StartTestLogging(t TestController) {
