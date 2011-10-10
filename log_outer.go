@@ -31,6 +31,7 @@ type LogMessage struct {
 	Level       int
 	Nanoseconds int64
 	Message     string
+	// Indicate no location provided with a nil Location.
 	Location    *LogLocation
 }
 
