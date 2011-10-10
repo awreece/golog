@@ -1,13 +1,6 @@
 // Better logging for Go.
 package golog
 
-const (
-	INFO = iota
-	WARNING
-	ERROR
-	FATAL
-)
-
 var Global *PackageLogger = NewDefaultPackageLogger()
 
 func Info(msg ...interface{}) {

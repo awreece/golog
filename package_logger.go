@@ -1,5 +1,12 @@
 package golog
 
+const (
+	INFO int = iota
+	WARNING
+	ERROR
+	FATAL
+)
+
 type PackageLogger struct {
 	LocationLogger
 	MultiLogOuter
