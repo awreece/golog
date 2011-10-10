@@ -67,12 +67,24 @@ func (l *locationLoggerImpl) LogDepth(level int, closure func() string, depth in
 	l.Logger.Log(level, l.makeLogClosure(level, closure, depth+1))
 }
 
+func printClosure(msg ...interface{}) func() string {
+	return func() string {
+		return fmt.Sprint(msg...)
+	}
+}
+
+func printfClosure(format string, vals ...interface{}) func() string {
+	return func() string {
+		return fmt.Sprintf(format, vals...)
+	}
+}
+
 func (l *locationLoggerImpl) Log(level int, msg ...interface{}) {
-	l.LogDepth(level, func() string { return fmt.Sprint(msg...) }, 1)
+	l.LogDepth(level, printClosure(msg...), 1)
 }
 
 func (l *locationLoggerImpl) Logf(level int, format string, msg ...interface{}) {
-	l.LogDepth(level, func() string { return fmt.Sprintf(format, msg...) }, 1)
+	l.LogDepth(level, printfClosure(format, msg...), 1)
 }
 
 func (l *locationLoggerImpl) Logc(level int, closure func() string) {

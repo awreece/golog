@@ -9,7 +9,6 @@ const (
 
 var Global *PackageLogger = NewDefaultPackageLogger()
 
-
 func Info(msg ...interface{}) {
 	Global.LogDepth(INFO, printClosure(msg...), 1)
 }

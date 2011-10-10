@@ -1,9 +1,5 @@
 package golog
 
-import (
-	"fmt"
-)
-
 type PackageLogger struct {
 	LocationLogger
 	MultiLogOuter
@@ -43,18 +39,6 @@ func (l *PackageLogger) StopTestLogging() {
 	l.MultiLogOuter.RemoveLogOuter("testing")
 	l.failFunc = exitNow
 }
-
-func printClosure(msg ...interface{}) func() string {
-	return func() string {
-		return fmt.Sprint(msg...)
-	}
-}
-func printfClosure(format string, vals ...interface{}) func() string {
-	return func() string {
-		return fmt.Sprintf(format, vals...)
-	}
-}
-
 func (l *PackageLogger) Info(msg ...interface{}) {
 	l.LogDepth(INFO, printClosure(msg...), 1)
 }
