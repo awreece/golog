@@ -1,3 +1,4 @@
+// Better logging for Go.
 package golog
 
 const (
