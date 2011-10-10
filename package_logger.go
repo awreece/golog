@@ -37,14 +37,18 @@ failFunc func(), locFunc func(skip int) *LogLocation) *PackageLogger {
 	return newPackageLoggerCommon(outer, &minloglevel, failFunc, locFunc)
 }
 
+// Associates TestController with a the "testing LogOuter and updates
+// l.FailNow() to call t.FailNow().
 func (l *PackageLogger) StartTestLogging(t TestController) {
 	l.MultiLogOuter.AddLogOuter("testing", NewTestLogOuter(t))
-	// TODO(awreece) Safe old failFunc so we can restore it properly.
+	// TODO(awreece) Save old failFunc so we can restore it properly.
 	l.failFunc = func() { t.FailNow() }
 }
 
+// Removes the testing logger and restores l.FailNow() to its previous state.
 func (l *PackageLogger) StopTestLogging() {
 	l.MultiLogOuter.RemoveLogOuter("testing")
+	// TODO(awreece) Restored to saved failFunc.
 	l.failFunc = ExitError
 }
 func (l *PackageLogger) Info(msg ...interface{}) {
