@@ -8,12 +8,17 @@ import (
 	"time"
 )
 
+type LocationLogger interface {
+	LogDepth(level int, closure func() string, depth int)
+	FailNow()
+	SetMinLogLevel(int)
+}
+
 type LevelLogger interface {
 	Log(level int, vals ...interface{})
 	Logf(level int, f string, vals ...interface{})
 	Logc(level int, closure func() string)
-	FailNow()
-	SetMinLogLevel(int)
+	LocationLogger
 }
 
 type levelLoggerImpl struct {
@@ -47,12 +52,10 @@ func NewLevelLogger(l Logger, locFunc func(int) *LogLocation) LevelLogger {
 	return &levelLoggerImpl{l, locFunc}
 }
 
-func (l *levelLoggerImpl) makeLogClosure(level int, msg func() string) func() *LogMessage {
+func (l *levelLoggerImpl) makeLogClosure(level int, msg func() string, skip int) func() *LogMessage {
 	// Evaluate this early.
 	ns := time.Nanoseconds()
-	// TODO Be less brittle.
-	// Skip over makeLogClosure, logCommon, and Log
-	location := l.getLocation(3)
+	location := l.getLocation(skip + 1)
 
 	return func() *LogMessage {
 		return &LogMessage{
@@ -64,18 +67,18 @@ func (l *levelLoggerImpl) makeLogClosure(level int, msg func() string) func() *L
 	}
 }
 
-func (l *levelLoggerImpl) logCommon(level int, closure func() string) {
-	l.Logger.Log(level, l.makeLogClosure(level, closure))
+func (l *levelLoggerImpl) LogDepth(level int, closure func() string, depth int) {
+	l.Logger.Log(level, l.makeLogClosure(level, closure, depth + 1))
 }
 
 func (l *levelLoggerImpl) Log(level int, msg ...interface{}) {
-	l.logCommon(level, func() string { return fmt.Sprint(msg...) })
+	l.LogDepth(level, func() string { return fmt.Sprint(msg...) }, 1)
 }
 
 func (l *levelLoggerImpl) Logf(level int, f string, msg ...interface{}) {
-	l.logCommon(level, func() string { return fmt.Sprintf(f, msg...) })
+	l.LogDepth(level, func() string { return fmt.Sprintf(f, msg...) }, 1)
 }
 
 func (l *levelLoggerImpl) Logc(level int, closure func() string) {
-	l.logCommon(level, closure)
+	l.LogDepth(level, closure, 1)
 }
