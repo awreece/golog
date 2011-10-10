@@ -2,6 +2,7 @@ package golog
 
 import (
 	"flag"
+	"os"
 )
 
 // Prints everything this level and above. (Set to SILENT to disable).
@@ -22,6 +23,10 @@ type Logger interface {
 	Log(level int, closure func() *LogMessage)
 	FailNow()
 	SetMinLogLevel(level int)
+}
+
+func exitNow() {
+	os.Exit(1)
 }
 
 func NewLogger(outer LogOuter, minloglevel int, failFunc func()) Logger {

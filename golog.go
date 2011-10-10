@@ -1,9 +1,5 @@
 package golog
 
-import (
-	"os"
-)
-
 const (
 	INFO = iota
 	WARNING
@@ -12,10 +8,6 @@ const (
 )
 
 var Global PackageLogger = NewDefaultPackageLogger()
-
-func exitNow() {
-	os.Exit(1)
-}
 
 func Info(vals ...interface{}) {
 	Global.Log(INFO, vals...)
