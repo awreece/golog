@@ -24,12 +24,6 @@ type Logger interface {
 	SetMinLogLevel(level int)
 }
 
-var DefaultLogger Logger = &loggerImpl{
-	defaultLogOuters,
-	flag_minloglevel,
-	exitNow,
-}
-
 func NewLogger(outer LogOuter, minloglevel int, failFunc func()) Logger {
 	return &loggerImpl{outer, &minloglevel, failFunc}
 }
