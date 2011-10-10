@@ -2,6 +2,7 @@ include $(GOROOT)/src/Make.inc
 
 TARG=golog
 GOFILES=\
+	doc.go\
 	golog.go\
 	location_logger.go\
 	logger.go\
