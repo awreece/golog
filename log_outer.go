@@ -17,7 +17,9 @@ import (
 	"time"
 )
 
-// The location in the source of a log message.
+// The location in the source of a log message. Any fields set to their zero
+// values will be assumed to be absent. (The empty string is not a valid
+// package/function/file, and 0 is not a valid line number).
 type LogLocation struct {
 	Package  string
 	Function string
