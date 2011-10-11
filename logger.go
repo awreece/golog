@@ -38,11 +38,11 @@ type Logger interface {
 }
 
 // A Logger that can be used as a flag to set minloglevel. For example,
-//	var packageLogger LoggerFlag = NewDefaultLogger()
+//	var myLogger LoggerFlag = NewDefaultLogger()
 //	
 //	func init() {
-//		flag.Var(defaultLogger, "minloglevel", "Log messages at or "+
-//			"above this level")
+//		flag.Var(myLogger, "minloglevel", "Log messages at or above "+
+//			"this level")
 //	}
 type LoggerFlag interface {
 	Logger
