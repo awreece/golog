@@ -70,18 +70,20 @@ type StringLogger interface {
 	Fatalc(func() string)
 }
 
-// A PackageLogger 
+// A PackageLogger is the expected entry point into this package. It is a
+// StringLogger that also provides the StartTestLogging and StopTestLogging,
+// as well as the ability to add and remove LogOuters and modify minloglevel.
 type PackageLogger struct {
-	LocationLogger
-	MultiLogOuter
+	logger LocationLogger
+	outer MultiLogOuter
 	failFunc func()
 }
 
 func NewPackageLogger(outer MultiLogOuter, minloglevel int,
 failFunc func(), locFunc func(skip int) *LogLocation) *PackageLogger {
-	ret := &PackageLogger{failFunc: failFunc, MultiLogOuter: outer}
+	ret := &PackageLogger{failFunc: failFunc, outer: outer}
 
-	ret.LocationLogger = NewLocationLogger(
+	ret.logger = NewLocationLogger(
 		&loggerImpl{
 			outer,
 			defaultMinLogLevel,
@@ -92,6 +94,7 @@ failFunc func(), locFunc func(skip int) *LogLocation) *PackageLogger {
 	return ret
 }
 
+// Construct a new PackageLogger with sensible defaults.
 func NewDefaultPackageLogger() *PackageLogger {
 	return NewPackageLogger(
 		NewDefaultMultiLogOuter(),
@@ -103,14 +106,14 @@ func NewDefaultPackageLogger() *PackageLogger {
 // Associates TestController with a the "testing LogOuter and updates
 // l.FailNow() to call t.FailNow().
 func (l *PackageLogger) StartTestLogging(t TestController) {
-	l.MultiLogOuter.AddLogOuter("testing", NewTestLogOuter(t))
+	l.outer.AddLogOuter("testing", NewTestLogOuter(t))
 	// TODO(awreece) Save old failFunc so we can restore it properly.
 	l.failFunc = func() { t.FailNow() }
 }
 
 // Removes the testing logger and restores l.FailNow() to its previous state.
 func (l *PackageLogger) StopTestLogging() {
-	l.MultiLogOuter.RemoveLogOuter("testing")
+	l.outer.RemoveLogOuter("testing")
 	// TODO(awreece) Restored to saved failFunc.
 	l.failFunc = ExitError
 }
@@ -131,78 +134,90 @@ func printfClosure(format string, vals ...interface{}) func() string {
 
 // Implements StringLogger.Info().
 func (l *PackageLogger) Info(msg ...interface{}) {
-	l.LogDepth(INFO, printClosure(msg...), 1)
+	l.logger.LogDepth(INFO, printClosure(msg...), 1)
 }
 
 // Implement StringLogger.Infof().
 func (l *PackageLogger) Infof(fmt string, vals ...interface{}) {
-	l.LogDepth(INFO, printfClosure(fmt, vals...), 1)
+	l.logger.LogDepth(INFO, printfClosure(fmt, vals...), 1)
 }
 
 // Implement StringLogger.Infoc()
 func (l *PackageLogger) Infoc(closure func() string) {
-	l.LogDepth(INFO, closure, 1)
+	l.logger.LogDepth(INFO, closure, 1)
 }
 
 // Implement StringLogger.Warning().
 func (l *PackageLogger) Warning(msg ...interface{}) {
-	l.LogDepth(WARNING, printClosure(msg...), 1)
+	l.logger.LogDepth(WARNING, printClosure(msg...), 1)
 }
 
 // Implement StringLogger.Warningf().
 func (l *PackageLogger) Warningf(fmt string, vals ...interface{}) {
-	l.LogDepth(WARNING, printfClosure(fmt, vals...), 1)
+	l.logger.LogDepth(WARNING, printfClosure(fmt, vals...), 1)
 }
 
 // Implement StringLogger.Warningc().
 func (l *PackageLogger) Warningc(closure func() string) {
-	l.LogDepth(WARNING, closure, 1)
+	l.logger.LogDepth(WARNING, closure, 1)
 }
 
 // Implement StringLogger.Error().
 func (l *PackageLogger) Error(msg ...interface{}) {
-	l.LogDepth(ERROR, printClosure(msg...), 1)
+	l.logger.LogDepth(ERROR, printClosure(msg...), 1)
 }
 
 // Implement StringLogger.Errorf().
 func (l *PackageLogger) Errorf(fmt string, vals ...interface{}) {
-	l.LogDepth(ERROR, printfClosure(fmt, vals...), 1)
+	l.logger.LogDepth(ERROR, printfClosure(fmt, vals...), 1)
 }
 
 // Implement StringLogger.Errorc().
 func (l *PackageLogger) Errorc(closure func() string) {
-	l.LogDepth(ERROR, closure, 1)
+	l.logger.LogDepth(ERROR, closure, 1)
 }
 
 // Implement StringLogger.Fatal().
 func (l *PackageLogger) Fatal(msg ...interface{}) {
-	l.LogDepth(FATAL, printClosure(msg...), 1)
-	l.FailNow()
+	l.logger.LogDepth(FATAL, printClosure(msg...), 1)
+	l.logger.FailNow()
 }
 
 // Implement StringLogger.Fatalf()
 func (l *PackageLogger) Fatalf(fmt string, vals ...interface{}) {
-	l.LogDepth(FATAL, printfClosure(fmt, vals...), 1)
-	l.FailNow()
+	l.logger.LogDepth(FATAL, printfClosure(fmt, vals...), 1)
+	l.logger.FailNow()
 }
 
 // Implement StringLogger.Fatalc()
 func (l *PackageLogger) Fatalc(closure func() string) {
-	l.LogDepth(FATAL, closure, 1)
-	l.FailNow()
+	l.logger.LogDepth(FATAL, closure, 1)
+	l.logger.FailNow()
 }
 
 // Implement StringLogger.Log()
 func (l *PackageLogger) Log(level int, msg ...interface{}) {
-	l.LogDepth(level, printClosure(msg...), 1)
+	l.logger.LogDepth(level, printClosure(msg...), 1)
 }
 
 // Implement StringLogger.Logf()
 func (l *PackageLogger) Logf(level int, format string, msg ...interface{}) {
-	l.LogDepth(level, printfClosure(format, msg...), 1)
+	l.logger.LogDepth(level, printfClosure(format, msg...), 1)
 }
 
 // Implement StringLogger.Logc()
 func (l *PackageLogger) Logc(level int, closure func() string) {
-	l.LogDepth(level, closure, 1)
+	l.logger.LogDepth(level, closure, 1)
+}
+
+func (l *PackageLogger) AddLogOuter(key string, outer LogOuter) {
+	l.outer.AddLogOuter(key, outer)
+}
+
+func (l *PackageLogger) RemoveLogOuter(key string) {
+	l.outer.RemoveLogOuter(key)
+}
+
+func (l *PackageLogger) SetMinLogLevel(level int) {
+	l.logger.SetMinLogLevel(level)
 }
