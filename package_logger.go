@@ -12,21 +12,62 @@ const (
 )
 
 type StringLogger interface {
-	Log(...interface{})
-	Logf(string,...interface{})
-	Logc(func()string)
-	Info(...interface{})
-	Infof(string,...interface{})
-	Infoc(func()string)
+	// Log the message at the level provided, formatting the message as if
+	// via a call to fmt.Sprint (only rendering string if the message will
+	// be logged).
+	Log(level int, msg ...interface{})
+	// Log the message at the level provided, formatting the message as if
+	// via a call to fmt.Sprintf (only rendering the string if the message
+	// will be logged).
+	Logf(level int, fmt string, val ...interface{})
+	// Log the message at the level provided. Only evaluates the closure if
+	// the message will be logged.
+	Logc(int, func() string)
+	// Log the message at the INFO level, formatting the message as if via
+	// a call to fmt.Sprint and only rendering the string if the message
+	// will be logged.
+	Info(msg ...interface{})
+	// Log the message at the INFO level, formatting the message as if via
+	// a call to fmt.Sprintf and only rendering the string if the message
+	// will be logged.
+	Infof(string, ...interface{})
+	// Log the message at the INFO level, only evaluating the closure and 
+	// rendering the string if the message will be logged.
+	Infoc(func() string)
+	// Log the message at the WARNING level, formatting the message as if via
+	// a call to fmt.Sprint and only rendering the string if the message
+	// will be logged.
 	Warning(...interface{})
-	Warningf(string,...interface{})
-	Warningc(func()string)
+	// Log the message at the WARNING level, formatting the message as if via
+	// a call to fmt.Sprintf and only rendering the string if the message
+	// will be logged.
+	Warningf(string, ...interface{})
+	// Log the message at the WARNING level, only evaluating the closure and 
+	// rendering the string if the message will be logged.
+	Warningc(func() string)
+	// Log the message at the ERROR level, formatting the message as if via
+	// a call to fmt.Sprint and only rendering the string if the message
+	// will be logged.
 	Error(...interface{})
-	Errorf(string,...interface{})
-	Errorc(func()string)
+	// Log the message at the ERROR level, formatting the message as if via
+	// a call to fmt.Sprintf and only rendering the string if the message
+	// will be logged.
+	Errorf(string, ...interface{})
+	// Log the message at the ERROR level, only evaluating the closure and 
+	// rendering the string if the message will be logged.
+	Errorc(func() string)
+	// Log the message at the FATAL level, formatting the message as if via
+	// a call to fmt.Sprint and only rendering the string if the message
+	// will be logged. Afterwards, calls a LogOuter.FailNow().
 	Fatal(...interface{})
-	Fatalf(string,...interface{})
-	Fatalc(func()string)
+	// Log the message at the FATAL level, formatting the message as if via
+	// a call to fmt.Sprintf and only rendering the string if the message
+	// will be logged. Afterwards, calls a LogOuter.FailNow()
+	Fatalf(string, ...interface{})
+	// Log the message at the FATAL level, only evaluating the closure and 
+	// rendering the string if the message will be logged. Afterwards,
+	// calls a LogOuter.FailNow().
+	Fatalc(func() string)
 }
 
 // A PackageLogger 
