@@ -1,6 +1,7 @@
 package golog
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"os"
@@ -37,8 +38,24 @@ type multiLogOuterImpl struct {
 }
 
 func (l *multiLogOuterImpl) String() string {
-	// TODO(awreece) better string
-	return fmt.Sprint("\"", l.outers, "\"")
+	l.lock.Lock()
+	defer l.lock.Unlock()
+
+	var buf bytes.Buffer
+	buf.WriteString("\"")
+
+	var first bool = true
+	for filename, _ := range l.outers {
+		if first {
+			first = false
+		} else {
+			buf.WriteString(",")
+		}
+		buf.WriteString(filename)
+	}
+
+	buf.WriteString("\"")
+	return buf.String()
 }
 
 func (l *multiLogOuterImpl) Set(name string) bool {
