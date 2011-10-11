@@ -2,14 +2,26 @@ package golog
 
 import (
 	"flag"
+	"fmt"
 	"os"
+	"strconv"
 )
 
-// Prints everything this level and above. (Set to SILENT to disable).
-var flag_minloglevel = flag.Int("golog.minloglevel", INFO,
+var defaultMinLogLevel int = ERROR
+
+var defaultLogger *loggerImpl = &loggerImpl{
+	defaultLogOuters,
+	defaultMinLogLevel,
+	ExitError,
+}
+
+func init() {
+	// Prints everything this level and above. 
+	flag.Var(defaultLogger, "golog.minloglevel",
 	"Log messages at or above this level. The "+
 		"numbers of severity levels INFO, WARNING, "+
 		"ERROR, and FATAL are 0, 1, 2, and 3, respectively")
+}
 
 // Logger.Log uses the level to determine whether or not to output the
 // arguments. Logger.Log will output the provided arguments exactly, without
@@ -37,29 +49,26 @@ func ExitError() {
 // higher to the given LogOuter. Calls to Logger.FailNow() call the provided
 // failFunc closure.
 func NewLogger(outer LogOuter, minloglevel int, failFunc func()) Logger {
-	return &loggerImpl{outer, &minloglevel, failFunc}
+	return &loggerImpl{outer, minloglevel, failFunc}
 }
 
-// Return the default log outer. 
+// Return a default initialized log outer. 
 func NewDefaultLogger() Logger {
-	// TODO Use only one global default logger, pass a ptr to it.
 	return &loggerImpl{
 		NewDefaultMultiLogOuter(),
-		flag_minloglevel,
+		defaultMinLogLevel,
 		ExitError,
 	}
 }
 
 type loggerImpl struct {
 	LogOuter
-	// This is a reference type so we can add log writers before having 
-	// parsed flag_minloglevel.
-	minloglevel *int
+	minloglevel int
 	failFunc    func()
 }
 
 func (l *loggerImpl) Log(level int, closure func() *LogMessage) {
-	if level >= *l.minloglevel {
+	if level >= l.minloglevel {
 		l.Output(closure())
 	}
 }
@@ -70,5 +79,20 @@ func (l *loggerImpl) FailNow() {
 }
 
 func (l *loggerImpl) SetMinLogLevel(level int) {
-	l.minloglevel = &level
+	l.minloglevel = level
+}
+
+func (l *loggerImpl) Set(val string) bool {
+	if ival, err := strconv.Atoi(val); err != nil {
+		l.minloglevel = ival
+		return true
+	} else {
+		fmt.Println("Error setting flag: ", err)
+	}
+
+	return false
+}
+
+func (l *loggerImpl) String() string {
+	return fmt.Sprint(l.minloglevel)
 }
