@@ -20,7 +20,7 @@ example:
 		golog.Fatal("Error opening file:", err)
 	}
 
-The Global PackageLogger output to default files set by flags. For example,
+The Global PackageLogger outputs to default files set by flags. For example,
 to log to stderr and to temp.log, invoke the binary with the additional
 flags --golog.logfile=/dev/stderr --golog.logfile=temp.log.
 
@@ -43,15 +43,14 @@ and StopTestLogging() at the end. For example:
 	}
 
 While in test logging mode, calls to Fatal() (and DefaultLogger.FailNow())
-will call testing.(*T).FailNow() rather than
-exiting the program abruptly.
+will call testing.(*T).FailNow() rather than exiting the program abruptly.
 
 Another common way to use this pacakge is to create a local PackageLogger.
 This can either be declared on the package level or passed in by value.
 
 Advanced usage
 This package is highly modular and configurable; different components can be
-plugged in to modify the behavior. For example, to speed up logging an advanced
+plugged in to modify the behavior. For example, to speed up logging, an advanced
 user could try creating a LocationLogger using the NoLocation function, or
 even create a custom location function.
 
@@ -64,10 +63,10 @@ each logical component. The important types are:
 
 -	A LogMessage is a logged message with associated metadata.
 
--	A LogOuter controls outputing a LogMessage.
+-	A LogOuter controls the formatted output of a LogMessage.
 
 -	A MultiLogOuter multiplexes an outputted message to a set of keyed
-LogOuters. The associated MultiLogOuterFlag automatically add 
+LogOuters. The associated MultiLogOuterFlag automatically adds 
 logfiles to the associated set of LogOuters.
 
 -	A Logger decides whether or not to log a message, and if so renders 
@@ -76,6 +75,9 @@ the message and outputs it.
 -	A LocationLogger is a wrapper for a Logger that generates a closure
 to return a LogMessage with the associate metadata and is the first 
 easily usable entrypoint into this package.
+
+-	A StringLogger is a wrapper for a LocationLogger that exports
+methods for logging at semantic levels.
 
 -	A PackageLogger has a set of functions designed be quickly useful
 and is the expected entry point into this package.
