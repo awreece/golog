@@ -94,3 +94,5 @@ each logical component. The important types are:
 
 *	A `PackageLogger` has a set of functions designed be quickly useful
 	and is the expected entry point into this package.
+
+For additional documenation, see the godoc output for this package.
