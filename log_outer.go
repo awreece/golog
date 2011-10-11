@@ -33,7 +33,7 @@ type LogMessage struct {
 	Nanoseconds int64
 	Message     string
 	// Indicate no location provided with a nil Location.
-	Location    *LogLocation
+	Location *LogLocation
 }
 
 type LogOuter interface {
@@ -113,7 +113,7 @@ func (f *writerLogOuter) Output(m *LogMessage) {
 
 // Returns a LogOuter wrapping the io.Writer.
 func NewWriterLogOuter(f io.Writer) LogOuter {
-	return &writerLogOuter{io.Writer:f}
+	return &writerLogOuter{io.Writer: f}
 }
 
 // Returns a LogOuter wrapping the file, or an error if the file cannot be
