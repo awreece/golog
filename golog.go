@@ -1,7 +1,31 @@
 // Better logging for Go.
 package golog
 
-var Global *PackageLogger = NewDefaultPackageLogger()
+import (
+	"flag"
+)
+
+var Global *PackageLogger
+
+func init() {
+	Global = &PackageLogger{
+		failFunc: ExitError,
+		outer:    NewDefaultMultiLogOuter(),
+	}
+
+	logger := NewLogger(
+		Global.outer,
+		defaultMinLogLevel,
+		func() { Global.failFunc() })
+
+	// Prints everything this level and above. 
+	flag.Var(logger, "golog.minloglevel",
+		"Log messages at or above this level. The "+
+			"numbers of severity levels INFO, WARNING, "+
+			"ERROR, and FATAL are 0, 1, 2, and 3, respectively")
+
+	Global.logger = NewLocationLogger(logger, FullLocation)
+}
 
 // Wrapper for Global.Info().
 func Info(msg ...interface{}) {

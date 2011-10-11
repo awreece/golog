@@ -9,16 +9,6 @@ import (
 
 var defaultMinLogLevel int = ERROR
 
-var defaultLogger LoggerFlag = NewDefaultLogger()
-
-func init() {
-	// Prints everything this level and above. 
-	flag.Var(defaultLogger, "golog.minloglevel",
-		"Log messages at or above this level. The "+
-			"numbers of severity levels INFO, WARNING, "+
-			"ERROR, and FATAL are 0, 1, 2, and 3, respectively")
-}
-
 // Logger.Log uses the level to determine whether or not to output the
 // arguments. Logger.Log will output the provided arguments exactly, without
 // additional formatting such as adding a prefix etc. In addition, Logger.Log
