@@ -34,3 +34,21 @@ func TestNoOutput(t *testing.T) {
 		t.Error("Closure evaluated even though no output produced")
 	}
 }
+
+func TestFailFunc(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	mockLogOuter := NewMockLogOuter(mockCtrl)
+
+	var called bool = false
+
+	// TODO(awreece) Our testing fail function violates spec by returning to 
+	// normal control flow?
+	logger := NewLogger(mockLogOuter, 1, func() { called = true })
+
+	logger.FailNow()
+	if !called {
+		t.Error("Fail function not called!")
+	}
+}
