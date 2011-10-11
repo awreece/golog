@@ -9,18 +9,14 @@ import (
 
 var defaultMinLogLevel int = ERROR
 
-var defaultLogger *loggerImpl = &loggerImpl{
-	defaultLogOuters,
-	defaultMinLogLevel,
-	ExitError,
-}
+var defaultLogger LoggerFlag = NewDefaultLogger()
 
 func init() {
 	// Prints everything this level and above. 
 	flag.Var(defaultLogger, "golog.minloglevel",
-	"Log messages at or above this level. The "+
-		"numbers of severity levels INFO, WARNING, "+
-		"ERROR, and FATAL are 0, 1, 2, and 3, respectively")
+		"Log messages at or above this level. The "+
+			"numbers of severity levels INFO, WARNING, "+
+			"ERROR, and FATAL are 0, 1, 2, and 3, respectively")
 }
 
 // Logger.Log uses the level to determine whether or not to output the
@@ -41,6 +37,18 @@ type Logger interface {
 	SetMinLogLevel(level int)
 }
 
+// A Logger that can be used as a flag to set minloglevel. For example,
+//	var packageLogger LoggerFlag = NewDefaultLogger()
+//	
+//	func init() {
+//		flag.Var(defaultLogger, "minloglevel", "Log messages at or "+
+//			"above this level")
+//	}
+type LoggerFlag interface {
+	Logger
+	flag.Value
+}
+
 func ExitError() {
 	os.Exit(1)
 }
@@ -48,12 +56,12 @@ func ExitError() {
 // Construct a new Logger that writes any messages of level minloglevel or
 // higher to the given LogOuter. Calls to Logger.FailNow() call the provided
 // failFunc closure.
-func NewLogger(outer LogOuter, minloglevel int, failFunc func()) Logger {
+func NewLogger(outer LogOuter, minloglevel int, failFunc func()) LoggerFlag {
 	return &loggerImpl{outer, minloglevel, failFunc}
 }
 
 // Return a default initialized log outer. 
-func NewDefaultLogger() Logger {
+func NewDefaultLogger() LoggerFlag {
 	return &loggerImpl{
 		NewDefaultMultiLogOuter(),
 		defaultMinLogLevel,
