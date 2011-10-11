@@ -210,14 +210,18 @@ func (l *PackageLogger) Logc(level int, closure func() string) {
 	l.logger.LogDepth(level, closure, 1)
 }
 
+// Export MutliLogOuter.AddLogOuter().
 func (l *PackageLogger) AddLogOuter(key string, outer LogOuter) {
 	l.outer.AddLogOuter(key, outer)
 }
 
+// Export MutliLogOuter.RemoveLogOuter().
 func (l *PackageLogger) RemoveLogOuter(key string) {
 	l.outer.RemoveLogOuter(key)
 }
 
+// Export Logger.SetMinLogLevel(). Note - this will affect MinLogLevel of
+// underlying Logger.
 func (l *PackageLogger) SetMinLogLevel(level int) {
 	l.logger.SetMinLogLevel(level)
 }
