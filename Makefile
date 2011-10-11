@@ -7,6 +7,7 @@ GOFILES=\
 	location_logger.go\
 	logger.go\
 	log_outer.go\
+	mock_log_outer.go\
 	multi_log_outer.go\
 	package_logger.go\
 
