@@ -33,8 +33,9 @@ example:
 	}
 
 The `Global` `PackageLogger` outputs to default files set by flags. For example,
-to log to `stderr` and to `temp.log`, invoke the binary with the additional
-flags `--golog.logfile=/dev/stderr --golog.logfile=temp.log`.
+to log to `stderr` and to `temp.log` at log level `WARNING`, invoke the binary
+using this package as follows:
+	./mybinary --golog.logfile=/dev/stderr --golog.logfile=temp.log --golog.minloglevel=1
 
 This package also makes it easy to log to a testing harness in addition to
 files. To do this, invoke `StartTestLogging(t)` at the start of every test
