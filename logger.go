@@ -81,7 +81,7 @@ func (l *loggerImpl) SetMinLogLevel(level int) {
 }
 
 func (l *loggerImpl) Set(val string) bool {
-	if ival, err := strconv.Atoi(val); err != nil {
+	if ival, err := strconv.Atoi(val); err == nil {
 		l.minloglevel = ival
 		return true
 	} else {
