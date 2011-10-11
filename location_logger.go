@@ -53,8 +53,7 @@ func NewLocationLogger(l Logger, locFunc func(int) *LogLocation) LocationLogger 
 	return &locationLoggerImpl{l, locFunc}
 }
 
-// Returns a LocationLogger wrapping the DefaultLogger. Note - calls to
-// SetMinLogLevel will affect all DefaultLoggers.
+// Returns a LocationLogger wrapping the DefaultLogger. 
 func NewDefaultLocationLoger() LocationLogger {
 	return NewLocationLogger(NewDefaultLogger(), FullLocation)
 }

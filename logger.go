@@ -40,8 +40,7 @@ func NewLogger(outer LogOuter, minloglevel int, failFunc func()) Logger {
 	return &loggerImpl{outer, &minloglevel, failFunc}
 }
 
-// Return the default log outer. Note: calls to SetMinLogLevel will affect 
-// all instances of the DefaultLogger.
+// Return the default log outer. 
 func NewDefaultLogger() Logger {
 	// TODO Use only one global default logger, pass a ptr to it.
 	return &loggerImpl{
@@ -71,5 +70,5 @@ func (l *loggerImpl) FailNow() {
 }
 
 func (l *loggerImpl) SetMinLogLevel(level int) {
-	*l.minloglevel = level
+	l.minloglevel = &level
 }
