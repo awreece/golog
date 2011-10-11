@@ -52,3 +52,25 @@ func TestFailFunc(t *testing.T) {
 		t.Error("Fail function not called!")
 	}
 }
+
+func TestSetMinLogLevel(t *testing.T) {
+	mockCtrl := gomock.NewController(t)
+	defer mockCtrl.Finish()
+
+	message := &LogMessage{}
+
+	mockLogOuter := NewMockLogOuter(mockCtrl)
+	mockLogOuter.EXPECT().Output(message)
+
+	logger := NewLogger(mockLogOuter, 0, nil)
+	logger.Log(0, func() *LogMessage { return message })
+
+	logger.SetMinLogLevel(1)
+
+	var called bool = false
+	logger.Log(0, func() *LogMessage { called = true; return nil })
+
+	if called {
+		t.Error("Message logged when log level wrong")
+	}
+}
