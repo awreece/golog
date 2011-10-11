@@ -1,9 +1,11 @@
 package golog
 
 import (
+	"bytes"
 	"flag"
 	"fmt"
 	"os"
+	"sync"
 )
 
 // A MultiLogOuter is a LogOuter with multiple keyed LogOuters. All functions
@@ -31,13 +33,29 @@ type MultiLogOuterFlag interface {
 }
 
 type multiLogOuterImpl struct {
-	// TODO(awreece) Add mutex.
+	lock   sync.Mutex
 	outers map[string]LogOuter
 }
 
 func (l *multiLogOuterImpl) String() string {
-	// TODO(awreece) better string
-	return fmt.Sprint("\"", l.outers, "\"")
+	l.lock.Lock()
+	defer l.lock.Unlock()
+
+	var buf bytes.Buffer
+	buf.WriteString("\"")
+
+	var first bool = true
+	for filename, _ := range l.outers {
+		if first {
+			first = false
+		} else {
+			buf.WriteString(",")
+		}
+		buf.WriteString(filename)
+	}
+
+	buf.WriteString("\"")
+	return buf.String()
 }
 
 func (l *multiLogOuterImpl) Set(name string) bool {
@@ -55,18 +73,23 @@ func (l *multiLogOuterImpl) Set(name string) bool {
 }
 
 func (l *multiLogOuterImpl) AddLogOuter(key string, outer LogOuter) {
-	// TODO(awreece) Grab mutex.
+	l.lock.Lock()
+	defer l.lock.Unlock()
+
 	l.outers[key] = outer
 }
 
 func (l *multiLogOuterImpl) RemoveLogOuter(key string) {
-	// TODO(awreece) Grab mutex.
-	// TODO(awreece) Be Go1 compatible. :)
+	l.lock.Lock()
+	defer l.lock.Unlock()
+
 	l.outers[key] = nil, false
 }
 
 func (l *multiLogOuterImpl) Output(m *LogMessage) {
-	// TODO(awreece) Grab mutex.
+	l.lock.Lock()
+	defer l.lock.Unlock()
+
 	for _, outer := range l.outers {
 		outer.Output(m)
 	}
@@ -84,7 +107,7 @@ func NewDefaultMultiLogOuter() MultiLogOuterFlag {
 
 // Create an empty new MutliLogOuter.
 func NewMultiLogOuter() MultiLogOuterFlag {
-	return &multiLogOuterImpl{make(map[string]LogOuter)}
+	return &multiLogOuterImpl{outers: make(map[string]LogOuter)}
 }
 
 func init() {
