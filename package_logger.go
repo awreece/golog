@@ -129,83 +129,80 @@ func printfClosure(format string, vals ...interface{}) func() string {
 	}
 }
 
-// Log the message at level INFO, only formatting if message will be logged.
+// Implements StringLogger.Info().
 func (l *PackageLogger) Info(msg ...interface{}) {
 	l.LogDepth(INFO, printClosure(msg...), 1)
 }
 
-// Log the message at level INFO, only fomatting if message will be logged.
+// Implement StringLogger.Infof().
 func (l *PackageLogger) Infof(fmt string, vals ...interface{}) {
 	l.LogDepth(INFO, printfClosure(fmt, vals...), 1)
 }
 
-// Log the message at level INFO, only evaluating the closure if the message
-// will be logged.
+// Implement StringLogger.Infoc()
 func (l *PackageLogger) Infoc(closure func() string) {
 	l.LogDepth(INFO, closure, 1)
 }
 
-// Log the message at level WARNING, only formatting if message will be logged.
+// Implement StringLogger.Warning().
 func (l *PackageLogger) Warning(msg ...interface{}) {
 	l.LogDepth(WARNING, printClosure(msg...), 1)
 }
 
-// Log the message at level WARNING, only fomatting if message will be logged.
+// Implement StringLogger.Warningf().
 func (l *PackageLogger) Warningf(fmt string, vals ...interface{}) {
 	l.LogDepth(WARNING, printfClosure(fmt, vals...), 1)
 }
 
-// Log the message at level WARNING, only evaluating the closure if the message
-// will be logged.
+// Implement StringLogger.Warningc().
 func (l *PackageLogger) Warningc(closure func() string) {
 	l.LogDepth(WARNING, closure, 1)
 }
 
-// Log the message at level ERROR, only formatting if message will be logged.
+// Implement StringLogger.Error().
 func (l *PackageLogger) Error(msg ...interface{}) {
 	l.LogDepth(ERROR, printClosure(msg...), 1)
 }
 
-// Log the message at level ERROR, only formatting if message will be logged.
+// Implement StringLogger.Errorf().
 func (l *PackageLogger) Errorf(fmt string, vals ...interface{}) {
 	l.LogDepth(ERROR, printfClosure(fmt, vals...), 1)
 }
 
-// Log the message at level ERROR, only evaluating the closure if the message
-// will be logged.
+// Implement StringLogger.Errorc().
 func (l *PackageLogger) Errorc(closure func() string) {
 	l.LogDepth(ERROR, closure, 1)
 }
 
-// Log the message at level FATAL, only formatting if the message will be
-// logged. Also call l.FailNow().
+// Implement StringLogger.Fatal().
 func (l *PackageLogger) Fatal(msg ...interface{}) {
 	l.LogDepth(FATAL, printClosure(msg...), 1)
 	l.FailNow()
 }
 
-// Log the message at level FATAL, only formatting if the message will be
-// logged. Also call l.FailNow().
+// Implement StringLogger.Fatalf()
 func (l *PackageLogger) Fatalf(fmt string, vals ...interface{}) {
 	l.LogDepth(FATAL, printfClosure(fmt, vals...), 1)
 	l.FailNow()
 }
 
-// Log the message at level FATAL, only evaluating the clousre if the message
-// will be logged. Also call l.FailNow().
+// Implement StringLogger.Fatalc()
 func (l *PackageLogger) Fatalc(closure func() string) {
 	l.LogDepth(FATAL, closure, 1)
 	l.FailNow()
 }
 
+// Implement StringLogger.Log()
 func (l *PackageLogger) Log(level int, msg ...interface{}) {
 	l.LogDepth(level, printClosure(msg...), 1)
 }
 
+// Implement StringLogger.Logf()
 func (l *PackageLogger) Logf(level int, format string, msg ...interface{}) {
 	l.LogDepth(level, printfClosure(format, msg...), 1)
 }
 
+// Implement StringLogger.Logc()
 func (l *PackageLogger) Logc(level int, closure func() string) {
 	l.LogDepth(level, closure, 1)
 }
