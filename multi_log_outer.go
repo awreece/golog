@@ -18,6 +18,19 @@ type MultiLogOuter interface {
 	RemoveLogOuter(key string)
 }
 
+// REVIEW(korfuri) I'm a bit doubtful of how useful being able to
+// remove a log outer is. It seems that it complicates the code a lot
+// here by requiring much more synchronisation.
+
+// REVIEW(korfuri) This being said, I'm not a big fan of the
+// mutex-based approach here. A goroutine-based solution seems more
+// go-ish. Creating a multiLogOuterImpl can start a goroutine that
+// will select on several channels : one channel for messages (that
+// will be broadcasted to all other LogOuters), one channel to get new
+// LogOuters (and eventually one to remove them from the list of
+// outers), and one channel to destroy the multiLogOuterImpl. This way
+// you get implicit synchronisation instead of explicit.
+
 // A MultiLogOuter than can also be used as a flag for setting logfiles. 
 // For example, it is possible to use a logger other than default via:
 // 	var myOuter MultiLogOuterFlag = NewMultiLogOuter()
