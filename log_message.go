@@ -39,9 +39,9 @@ const (
 	File
 	Line
 	Hostname
-	Default        = Package | Function | File | Line
-	All            = Package | Function | File | Line | Hostname
-	requiresCaller = Package | Function | File | Line
+	Default    = Package | Function | File | Line
+	All        = Package | Function | File | Line | Hostname
+	requiresPC = Package | Function | File | Line
 )
 
 func MakeMetadataFunc(flags LocationFlag) MetadataFunc {
@@ -49,8 +49,10 @@ func MakeMetadataFunc(flags LocationFlag) MetadataFunc {
 		ret := NoLocation(skip + 1)
 
 		// TODO(awreece) Refactor.
-		if flags|requiresCaller > 0 {
+		if flags|requiresPC > 0 {
+			// Don't get the pc unless we have to.
 			if pc, file, line, ok := runtime.Caller(skip + 1); ok {
+				// Don't get FuncForPC unless we have to.
 				if flags|Package > 0 || flags|Function > 0 {
 					// TODO(awreece) Make sure this is 
 					// compiler agnostic.
