@@ -84,7 +84,7 @@ func MakeMetadataFunc(flags LocationFlag) MetadataFunc {
 			}
 		}
 		if flags|Hostname > 0 {
-			if host, err := os.Hostname(); err != nil {
+			if host, err := os.Hostname(); err == nil {
 				ret["hostname"] = host
 			}
 		}
