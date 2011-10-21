@@ -1,6 +1,5 @@
 package golog
 
-
 import (
 	"bytes"
 	"fmt"
@@ -31,25 +30,26 @@ func NoLocation(skip int) map[string]string { return make(map[string]string) }
 // Walks up the stack skip frames and returns the metatdata for that frame.
 // TODO(awreece) Provide a arg to select which fields to produce?
 func FullLocation(skip int) map[string]string {
+	ret := make(map[string]string)
+	// TODO add timestamp?
+
 	pc, file, line, ok := runtime.Caller(skip + 1)
 	if !ok {
-		// TODO add timestamp.
-		return make(map[string]string)
+		return ret
 	} else {
 		// TODO(awreece) Make sure this is compiler agnostic.
 		funcParts := strings.SplitN(runtime.FuncForPC(pc).Name(), ".", 2)
-		// TODO add timestamp.
-		return map[string]string{
-			"package":  funcParts[0],
-			"file": path.Base(file),
-			"function": funcParts[1],
-			"line": strconv.Itoa(line),
-		}
+
+		ret["package"] = funcParts[0]
+		ret["file"] = path.Base(file)
+		ret["function"] = funcParts[1]
+		ret["line"] = strconv.Itoa(line)
+
+		return ret
 	}
 
 	panic("Flow never reaches here, this mollifies the compiler")
 }
-
 
 // Render the formatted metadata to the buffer. If all present, format is 
 // "{time} {pack}.{func}/{file}:{line}". If some fields omitted, intelligently
