@@ -18,16 +18,14 @@ type locationLoggerImpl struct {
 
 
 // Returns a new LocationLogger wrapping the associated logger, and using
-// the provided function to generate LogLocations. The locFunc should walk
-// up the stack skip frames and generate the LogLocation for that function
-// call. For example:
+// the provided function to generate the metadata. For example:
 //	log := NewLocationLogger(NewDefaultLogger(), NoLocation)
 func NewLocationLogger(l Logger, metadataFunc MakeMetadataFunc) LocationLogger {
 	return &locationLoggerImpl{l, metadataFunc}
 }
 
 // Returns a LocationLogger wrapping the DefaultLogger. 
-func NewDefaultLocationLoger() LocationLogger {
+func NewDefaultLocationLogger() LocationLogger {
 	return NewLocationLogger(NewDefaultLogger(), FullLocation)
 }
 
