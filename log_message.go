@@ -30,25 +30,52 @@ var NoLocation MetadataFunc = func(skip int) map[string]string {
 	return make(map[string]string)
 }
 
-var FullLocation MetadataFunc = func(skip int) map[string]string {
-	ret := NoLocation(skip)
+type LocationFlag int
 
-	pc, file, line, ok := runtime.Caller(skip + 1)
-	if !ok {
-		return ret
-	} else {
-		// TODO(awreece) Make sure this is compiler agnostic.
-		funcParts := strings.SplitN(runtime.FuncForPC(pc).Name(), ".", 2)
+const (
+	None LocationFlag = 1 << iota
+	Package
+	Function
+	File
+	Line
+	Hostname
+	Default        = Package | Function | File | Line
+	All            = Package | Function | File | Line | Hostname
+	requiresCaller = Package | Function | File | Line
+)
 
-		ret["package"] = funcParts[0]
-		ret["file"] = path.Base(file)
-		ret["function"] = funcParts[1]
-		ret["line"] = strconv.Itoa(line)
+func MakeMetadataFunc(flags LocationFlag) MetadataFunc {
+	return func(skip int) map[string]string {
+		ret := NoLocation(skip + 1)
 
+		// TODO(awreece) Refactor.
+		if flags|requiresCaller > 0 {
+			if pc, file, line, ok := runtime.Caller(skip + 1); ok {
+				if flags|Package > 0 || flags|Function > 0 {
+					// TODO(awreece) Make sure this is 
+					// compiler agnostic.
+					funcParts := strings.SplitN(
+						runtime.FuncForPC(pc).Name(),
+						".", 2)
+					if flags|Package > 0 {
+						ret["package"] = funcParts[0]
+					}
+					if flags|Function > 0 {
+						ret["function"] = funcParts[1]
+					}
+				}
+
+				if flags|File > 0 {
+					ret["file"] = path.Base(file)
+				}
+				if flags|Line > 0 {
+					ret["line"] = strconv.Itoa(line)
+				}
+
+			}
+		}
 		return ret
 	}
-
-	panic("Flow never reaches here, this mollifies the compiler")
 }
 
 // Render the formatted metadata to the buffer. If all present, format is 

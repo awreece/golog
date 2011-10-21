@@ -26,7 +26,7 @@ func NewLocationLogger(l Logger, metadataFunc MetadataFunc) LocationLogger {
 
 // Returns a LocationLogger wrapping the DefaultLogger. 
 func NewDefaultLocationLogger() LocationLogger {
-	return NewLocationLogger(NewDefaultLogger(), FullLocation)
+	return NewLocationLogger(NewDefaultLogger(), MakeMetadataFunc(Default))
 }
 
 func (l *locationLoggerImpl) makeLogClosure(level int, msg func() string, skip int) func() *LogMessage {

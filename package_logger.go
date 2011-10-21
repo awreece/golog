@@ -100,7 +100,7 @@ func NewDefaultPackageLogger() *PackageLogger {
 		NewDefaultMultiLogOuter(),
 		defaultMinLogLevel,
 		ExitError,
-		FullLocation)
+		MakeMetadataFunc(Default))
 }
 
 // Associates TestController with a the "testing LogOuter and updates
