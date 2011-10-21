@@ -10,6 +10,8 @@ package golog
 
 import (
 	"io"
+	"json"
+	"net"
 	"os"
 	"sync"
 )
@@ -72,4 +74,34 @@ func (t *testLogOuter) Output(m *LogMessage) {
 // Return a LogOuter wrapping the TestControlller.
 func NewTestLogOuter(t TestController) LogOuter {
 	return &testLogOuter{t}
+}
+
+type udpLogOuter struct {
+	conn  net.PacketConn
+	raddr net.Addr
+}
+
+// Returns a LogOuter that forwards LogMessages in json format to UDP network
+// address. TODO(awreece): Use protobuf?
+func NewUDPLogOuter(raddr string) (LogOuter, os.Error) {
+	var addr *net.UDPAddr
+	var err os.Error
+	var conn net.PacketConn
+
+	if addr, err = net.ResolveUDPAddr("udp", raddr); err != nil {
+		return nil, err
+	}
+
+	if conn, err = net.DialUDP("udp", nil, addr); err != nil {
+		return nil, err
+	}
+
+	return &udpLogOuter{conn, addr}, nil
+}
+
+func (o *udpLogOuter) Output(m *LogMessage) {
+	if bytes, err := json.Marshal(m); err == nil {
+		// TODO Handle error?
+		o.conn.WriteTo(bytes, o.raddr)
+	}
 }
