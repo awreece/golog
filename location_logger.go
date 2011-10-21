@@ -3,6 +3,7 @@ package golog
 import (
 	"path"
 	"runtime"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -18,26 +19,28 @@ type locationLoggerImpl struct {
 	Logger
 	// TODO(awreece) comment this
 	// Skip 0 refers to the function calling getLocation.
-	getLocation func(skip int) *LogLocation
+	getLocation func(skip int) map[string]string
 }
 
 // Return a nil LogLocation.
-func NoLocation(skip int) *LogLocation { return nil }
+func NoLocation(skip int) map[string]string { return make(map[string]string) }
 
 // Walks up the stack skip frames and returns the LogLocation for that frame.
 // TODO(awreece) Provide a arg to select which fields to produce?
-func FullLocation(skip int) *LogLocation {
+func FullLocation(skip int) map[string]string {
 	pc, file, line, ok := runtime.Caller(skip + 1)
 	if !ok {
-		return nil
+		// TODO add timestamp.
+		return make(map[string]string)
 	} else {
 		// TODO(awreece) Make sure this is compiler agnostic.
 		funcParts := strings.SplitN(runtime.FuncForPC(pc).Name(), ".", 2)
-		return &LogLocation{
-			Package:  funcParts[0],
-			File:     path.Base(file),
-			Function: funcParts[1],
-			Line:     line,
+		// TODO add timestamp.
+		return map[string]string{
+			"package":  funcParts[0],
+			"file": path.Base(file),
+			"function": funcParts[1],
+			"line": strconv.Itoa(line),
 		}
 	}
 
@@ -49,7 +52,7 @@ func FullLocation(skip int) *LogLocation {
 // up the stack skip frames and generate the LogLocation for that function
 // call. For example:
 //	log := NewLocationLogger(NewDefaultLogger(), NoLocation)
-func NewLocationLogger(l Logger, locFunc func(int) *LogLocation) LocationLogger {
+func NewLocationLogger(l Logger, locFunc func(int) map[string]string) LocationLogger {
 	return &locationLoggerImpl{l, locFunc}
 }
 
@@ -61,14 +64,15 @@ func NewDefaultLocationLoger() LocationLogger {
 func (l *locationLoggerImpl) makeLogClosure(level int, msg func() string, skip int) func() *LogMessage {
 	// Evaluate this early.
 	ns := time.Nanoseconds()
-	location := l.getLocation(skip + 1)
+	metadata := l.getLocation(skip + 1)
+	// TODO add ns to metadata.
 
 	return func() *LogMessage {
 		return &LogMessage{
 			Level:       level,
 			Message:     msg(),
 			Nanoseconds: ns,
-			Location:    location,
+			Metadata : metadata,
 		}
 	}
 }

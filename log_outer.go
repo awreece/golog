@@ -13,27 +13,16 @@ import (
 	"fmt"
 	"io"
 	"os"
-	"strconv"
 	"sync"
 	"time"
 )
-
-// The location in the source of a log message. Any fields set to their zero
-// values will be assumed to be absent. (The empty string is not a valid
-// package/function/file, and 0 is not a valid line number).
-type LogLocation struct {
-	Package  string
-	Function string
-	File     string
-	Line     int
-}
 
 type LogMessage struct {
 	Level       int
 	Nanoseconds int64
 	Message     string
-	// Indicate no location provided with a nil Location.
-	Location *LogLocation
+	// A map from the type of metadata to the metadata, if present.
+	Metadata map[string]string
 }
 
 type LogOuter interface {
@@ -45,36 +34,41 @@ type LogOuter interface {
 // Render a formatted LogLocation to the buffer. If all present, format is 
 // "{pack}.{func}/{file}:{line}". If some fields omitted, intelligently
 // delimits the remaining fields.
-func renderLogLocation(buf *bytes.Buffer, l *LogLocation) {
-	if l == nil {
+func renderLogLocation(buf *bytes.Buffer, m *LogMessage) {
+	if m == nil {
 		return
 	}
-	packPresent := len(l.Package) > 0
-	funcPresent := len(l.Function) > 0
-	filePresent := len(l.Function) > 0
-	linePresent := l.Line > 0
+
+	packName, packPresent := m.Metadata["package"]
+	file, filePresent := m.Metadata["file"]
+	funcName, funcPresent := m.Metadata["function"]
+	line, linePresent := m.Metadata["line"]
+
+	if packPresent || filePresent || funcPresent || linePresent {
+		buf.WriteString(" ")
+	}
 
 	// TODO(awreece) This logic is terrifying.
 	if packPresent {
-		buf.WriteString(l.Package)
+		buf.WriteString(packName)
 	}
 	if funcPresent {
 		if packPresent {
 			buf.WriteString(".")
 		}
-		buf.WriteString(l.Function)
+		buf.WriteString(funcName)
 	}
 	if (packPresent || funcPresent) && (filePresent || linePresent) {
 		buf.WriteString("/")
 	}
 	if filePresent {
-		buf.WriteString(l.File)
+		buf.WriteString(file)
 	}
 	if linePresent {
 		if filePresent {
 			buf.WriteString(":")
 		}
-		buf.WriteString(strconv.Itoa(l.Line))
+		buf.WriteString(line)
 	}
 }
 
@@ -85,10 +79,7 @@ func formatLogMessage(m *LogMessage, insertNewline bool) string {
 	buf.WriteString(fmt.Sprintf("L%d", m.Level))
 	t := time.NanosecondsToLocalTime(m.Nanoseconds)
 	buf.WriteString(t.Format(" 15:04:05.000000"))
-	if m.Location != nil {
-		buf.WriteString(" ")
-		renderLogLocation(&buf, m.Location)
-	}
+	renderLogLocation(&buf, m)
 	buf.WriteString("] ")
 	buf.WriteString(m.Message)
 	if insertNewline {
