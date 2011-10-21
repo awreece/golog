@@ -3,6 +3,7 @@ package golog
 import (
 	"bytes"
 	"fmt"
+	"os"
 	"path"
 	"runtime"
 	"strconv"
@@ -44,6 +45,12 @@ const (
 	requiresPC = Package | Function | File | Line
 )
 
+
+// Returns a function the computes the specified fields of metadata for the log
+// message.
+// 
+// flags is the set of locations to add to the metadata. For example, 
+//	MakeMetadataFunc(File | Line | Hostname)
 func MakeMetadataFunc(flags LocationFlag) MetadataFunc {
 	return func(skip int) map[string]string {
 		ret := NoLocation(skip + 1)
@@ -74,6 +81,11 @@ func MakeMetadataFunc(flags LocationFlag) MetadataFunc {
 					ret["line"] = strconv.Itoa(line)
 				}
 
+			}
+		}
+		if flags|Hostname > 0 {
+			if host, err := os.Hostname(); err != nil {
+				ret["hostname"] = host
 			}
 		}
 		return ret
