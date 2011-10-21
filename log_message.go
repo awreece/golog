@@ -22,13 +22,13 @@ type LogMessage struct {
 }
 
 // TODO(awreece) comment this
-// Skip 0 refers to the function calling getLocation.
+// Skip 0 refers to the function calling this function.
 type MakeMetadataFunc func(skip int) map[string]string
 
 // Return a nil LogLocation.
 func NoLocation(skip int) map[string]string { return make(map[string]string) }
 
-// Walks up the stack skip frames and returns the LogLocation for that frame.
+// Walks up the stack skip frames and returns the metatdata for that frame.
 // TODO(awreece) Provide a arg to select which fields to produce?
 func FullLocation(skip int) map[string]string {
 	pc, file, line, ok := runtime.Caller(skip + 1)
