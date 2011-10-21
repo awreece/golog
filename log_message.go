@@ -24,12 +24,13 @@ type LogMessage struct {
 // Skip 0 refers to the function calling this function.
 type MakeMetadataFunc func(skip int) map[string]string
 
-// Return a nil LogLocation.
-func NoLocation(skip int) map[string]string { return make(map[string]string) }
+var NoLocation MakeMetadataFunc = func(skip int) map[string]string {
+	return make(map[string]string)
+}
 
 // Walks up the stack skip frames and returns the metatdata for that frame.
 // TODO(awreece) Provide a arg to select which fields to produce?
-func FullLocation(skip int) map[string]string {
+var FullLocation MakeMetadataFunc = func(skip int) map[string]string {
 	ret := make(map[string]string)
 	// TODO add timestamp?
 
