@@ -13,14 +13,14 @@ type LocationLogger interface {
 
 type locationLoggerImpl struct {
 	Logger
-	getMetadata MakeMetadataFunc
+	getMetadata MetadataFunc
 }
 
 
 // Returns a new LocationLogger wrapping the associated logger, and using
 // the provided function to generate the metadata. For example:
 //	log := NewLocationLogger(NewDefaultLogger(), NoLocation)
-func NewLocationLogger(l Logger, metadataFunc MakeMetadataFunc) LocationLogger {
+func NewLocationLogger(l Logger, metadataFunc MetadataFunc) LocationLogger {
 	return &locationLoggerImpl{l, metadataFunc}
 }
 

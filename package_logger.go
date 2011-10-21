@@ -80,7 +80,7 @@ type PackageLogger struct {
 }
 
 func NewPackageLogger(outer MultiLogOuter, minloglevel int,
-failFunc func(), metadataFunc MakeMetadataFunc) *PackageLogger {
+failFunc func(), metadataFunc MetadataFunc) *PackageLogger {
 	ret := &PackageLogger{failFunc: failFunc, outer: outer}
 
 	ret.logger = NewLocationLogger(
