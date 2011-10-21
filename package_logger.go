@@ -80,7 +80,7 @@ type PackageLogger struct {
 }
 
 func NewPackageLogger(outer MultiLogOuter, minloglevel int,
-failFunc func(), locFunc func(skip int) map[string]string) *PackageLogger {
+failFunc func(), metadataFunc MakeMetadataFunc) *PackageLogger {
 	ret := &PackageLogger{failFunc: failFunc, outer: outer}
 
 	ret.logger = NewLocationLogger(
@@ -89,7 +89,7 @@ failFunc func(), locFunc func(skip int) map[string]string) *PackageLogger {
 			defaultMinLogLevel,
 			func() { ret.failFunc() },
 		},
-		FullLocation)
+		metadataFunc)
 
 	return ret
 }
