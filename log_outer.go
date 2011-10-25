@@ -44,7 +44,8 @@ func NewWriterLogOuter(f io.Writer) LogOuter {
 // Returns a LogOuter wrapping the file, or an error if the file cannot be
 // opened.
 func NewFileLogOuter(filename string) (LogOuter, os.Error) {
-	if file, err := os.Create(filename); err != nil {
+	// TODO(awreece) Permissions?
+	if file, err := os.OpenFile(filename, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666); err != nil {
 		return nil, err
 	} else {
 		return NewWriterLogOuter(file), nil
