@@ -40,7 +40,7 @@ const (
 	File
 	Line
 	Hostname
-	Default    = Package | Function | File | Line
+	Default    = File | Line
 	All        = Package | Function | File | Line | Hostname
 	requiresPC = Package | Function | File | Line
 )
