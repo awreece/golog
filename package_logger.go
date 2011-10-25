@@ -80,7 +80,7 @@ type PackageLogger struct {
 }
 
 func NewPackageLogger(outer MultiLogOuter, minloglevel int,
-failFunc func(), locFunc func(skip int) *LogLocation) *PackageLogger {
+failFunc func(), metadataFunc MetadataFunc) *PackageLogger {
 	ret := &PackageLogger{failFunc: failFunc, outer: outer}
 
 	ret.logger = NewLocationLogger(
@@ -89,7 +89,7 @@ failFunc func(), locFunc func(skip int) *LogLocation) *PackageLogger {
 			defaultMinLogLevel,
 			func() { ret.failFunc() },
 		},
-		FullLocation)
+		metadataFunc)
 
 	return ret
 }
@@ -100,7 +100,7 @@ func NewDefaultPackageLogger() *PackageLogger {
 		NewDefaultMultiLogOuter(),
 		defaultMinLogLevel,
 		ExitError,
-		FullLocation)
+		MakeMetadataFunc(Default))
 }
 
 // Associates TestController with a the "testing LogOuter and updates

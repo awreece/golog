@@ -1,9 +1,6 @@
 package golog
 
 import (
-	"path"
-	"runtime"
-	"strings"
 	"time"
 )
 
@@ -16,59 +13,33 @@ type LocationLogger interface {
 
 type locationLoggerImpl struct {
 	Logger
-	// TODO(awreece) comment this
-	// Skip 0 refers to the function calling getLocation.
-	getLocation func(skip int) *LogLocation
-}
-
-// Return a nil LogLocation.
-func NoLocation(skip int) *LogLocation { return nil }
-
-// Walks up the stack skip frames and returns the LogLocation for that frame.
-// TODO(awreece) Provide a arg to select which fields to produce?
-func FullLocation(skip int) *LogLocation {
-	pc, file, line, ok := runtime.Caller(skip + 1)
-	if !ok {
-		return nil
-	} else {
-		// TODO(awreece) Make sure this is compiler agnostic.
-		funcParts := strings.SplitN(runtime.FuncForPC(pc).Name(), ".", 2)
-		return &LogLocation{
-			Package:  funcParts[0],
-			File:     path.Base(file),
-			Function: funcParts[1],
-			Line:     line,
-		}
-	}
-
-	panic("Flow never reaches here, this mollifies the compiler")
+	getMetadata MetadataFunc
 }
 
 // Returns a new LocationLogger wrapping the associated logger, and using
-// the provided function to generate LogLocations. The locFunc should walk
-// up the stack skip frames and generate the LogLocation for that function
-// call. For example:
+// the provided function to generate the metadata. For example:
 //	log := NewLocationLogger(NewDefaultLogger(), NoLocation)
-func NewLocationLogger(l Logger, locFunc func(int) *LogLocation) LocationLogger {
-	return &locationLoggerImpl{l, locFunc}
+func NewLocationLogger(l Logger, metadataFunc MetadataFunc) LocationLogger {
+	return &locationLoggerImpl{l, metadataFunc}
 }
 
 // Returns a LocationLogger wrapping the DefaultLogger. 
-func NewDefaultLocationLoger() LocationLogger {
-	return NewLocationLogger(NewDefaultLogger(), FullLocation)
+func NewDefaultLocationLogger() LocationLogger {
+	return NewLocationLogger(NewDefaultLogger(), MakeMetadataFunc(Default))
 }
 
 func (l *locationLoggerImpl) makeLogClosure(level int, msg func() string, skip int) func() *LogMessage {
 	// Evaluate this early.
 	ns := time.Nanoseconds()
-	location := l.getLocation(skip + 1)
+	// TODO(awreece) Add ns to metadata?
+	metadata := l.getMetadata(skip + 1)
 
 	return func() *LogMessage {
 		return &LogMessage{
 			Level:       level,
 			Message:     msg(),
 			Nanoseconds: ns,
-			Location:    location,
+			Metadata:    metadata,
 		}
 	}
 }
