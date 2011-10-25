@@ -102,7 +102,7 @@ func NewUDPLogOuter(raddr string) (LogOuter, os.Error) {
 func (o *udpLogOuter) Output(m *LogMessage) {
 	// TODO(awreece): Add Hostname if not present?
 	if bytes, err := json.Marshal(m); err == nil {
-		// TODO Handle error?
+		// TODO(awreece) Handle error?
 		o.conn.WriteTo(bytes, o.raddr)
 	}
 }

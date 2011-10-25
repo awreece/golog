@@ -27,7 +27,7 @@ type LogMessage struct {
 type MetadataFunc func(skip int) map[string]string
 
 var NoLocation MetadataFunc = func(skip int) map[string]string {
-	// TODO: Add timestamp?
+	// TODO(awreece) Add timestamp?
 	return make(map[string]string)
 }
 
@@ -97,7 +97,7 @@ func MakeMetadataFunc(flags LocationFlag) MetadataFunc {
 // delimits the remaining fields.
 func renderMetadata(buf *bytes.Buffer, m *LogMessage) {
 	if m == nil {
-		// TODO Panic here?
+		// TODO(awreece) Panic here?
 		return
 	}
 

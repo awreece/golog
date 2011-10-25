@@ -72,7 +72,7 @@ func (l *loggerImpl) Log(level int, closure func() *LogMessage) {
 }
 
 func (l *loggerImpl) FailNow() {
-	// TODO Flush log outer?
+	// TODO(awreece) Flush log outer?
 	l.failFunc()
 }
 

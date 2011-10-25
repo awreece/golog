@@ -16,7 +16,6 @@ type locationLoggerImpl struct {
 	getMetadata MetadataFunc
 }
 
-
 // Returns a new LocationLogger wrapping the associated logger, and using
 // the provided function to generate the metadata. For example:
 //	log := NewLocationLogger(NewDefaultLogger(), NoLocation)
@@ -32,7 +31,7 @@ func NewDefaultLocationLogger() LocationLogger {
 func (l *locationLoggerImpl) makeLogClosure(level int, msg func() string, skip int) func() *LogMessage {
 	// Evaluate this early.
 	ns := time.Nanoseconds()
-	// TODO add ns to metadata.
+	// TODO(awreece) Add ns to metadata?
 	metadata := l.getMetadata(skip + 1)
 
 	return func() *LogMessage {
@@ -40,7 +39,7 @@ func (l *locationLoggerImpl) makeLogClosure(level int, msg func() string, skip i
 			Level:       level,
 			Message:     msg(),
 			Nanoseconds: ns,
-			Metadata : metadata,
+			Metadata:    metadata,
 		}
 	}
 }
