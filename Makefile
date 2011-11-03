@@ -8,14 +8,17 @@ GOFILES=\
 	logger.go\
 	log_message.go\
 	log_outer.go\
-	mock_log_outer.go\
 	multi_log_outer.go\
 	package_logger.go\
 
+MOCKFILES=\
+	  mock_log_outer_test.go\
+
+override GOTESTFILES+=$(MOCKFILES)
+
 include $(GOROOT)/src/Make.pkg
 
-mock_log_outer.go:
-	mockgen --source=log_outer.go --destination=mock_log_outer.go --package=golog
+CLEANFILES+=$(MOCKFILES)
 
-CLEANFILES+=\
-	    mock_log_outer.go\
+mock_%_test.go: %.go
+	mockgen --source=$< --destination=$@ --package=golog
