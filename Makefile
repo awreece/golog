@@ -11,6 +11,9 @@ GOFILES=\
 	multi_log_outer.go\
 	package_logger.go\
 
+# We trick godoc into not exporting our mock object by naming it
+# mock_object_test.go. 
+# TODO(awreece) This feels somewhat hacky.
 MOCKFILES=\
 	  mock_log_outer_test.go\
 
