@@ -27,9 +27,9 @@ flags --golog.logfile=/dev/stderr --golog.logfile=temp.log.
 This package also makes it easy to log to a testing harness in addition to
 files. To do this, invoke StartTestLogging(t) at the start of every test
 and StopTestLogging() at the end. For example:
-	
+
 	package mypackage
-	
+
 	import (
 		"github.com/awreece/golog"
 		"testing"

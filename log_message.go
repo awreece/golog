@@ -45,7 +45,6 @@ const (
 	requiresPC = Package | Function | File | Line
 )
 
-
 // Returns a function the computes the specified fields of metadata for the log
 // message.
 // 

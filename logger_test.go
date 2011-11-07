@@ -5,7 +5,6 @@ import (
 	"testing"
 )
 
-
 func TestOutput(t *testing.T) {
 	mockCtrl := gomock.NewController(t)
 	defer mockCtrl.Finish()

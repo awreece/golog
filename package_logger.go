@@ -74,13 +74,13 @@ type StringLogger interface {
 // StringLogger that also provides the StartTestLogging and StopTestLogging,
 // as well as the ability to add and remove LogOuters and modify minloglevel.
 type PackageLogger struct {
-	logger LocationLogger
-	outer MultiLogOuter
+	logger   LocationLogger
+	outer    MultiLogOuter
 	failFunc func()
 }
 
 func NewPackageLogger(outer MultiLogOuter, minloglevel int,
-failFunc func(), metadataFunc MetadataFunc) *PackageLogger {
+	failFunc func(), metadataFunc MetadataFunc) *PackageLogger {
 	ret := &PackageLogger{failFunc: failFunc, outer: outer}
 
 	ret.logger = NewLocationLogger(
