@@ -40,9 +40,9 @@ const (
 	File
 	Line
 	Hostname
-	Default    = File | Line
-	All        = Package | Function | File | Line | Hostname
-	requiresPC = Package | Function | File | Line
+	DefaultMetadata = File | Line
+	All             = Package | Function | File | Line | Hostname
+	requiresPC      = Package | Function | File | Line
 )
 
 // Returns a function the computes the specified fields of metadata for the log

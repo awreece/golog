@@ -24,7 +24,8 @@ func init() {
 			"numbers of severity levels INFO, WARNING, "+
 			"ERROR, and FATAL are 0, 1, 2, and 3, respectively")
 
-	Global.logger = NewLocationLogger(logger, MakeMetadataFunc(Default))
+	Global.logger = NewLocationLogger(logger,
+		MakeMetadataFunc(DefaultMetadata))
 }
 
 // Wrapper for Global.Info().
