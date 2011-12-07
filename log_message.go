@@ -55,34 +55,34 @@ func MakeMetadataFunc(flags LocationFlag) MetadataFunc {
 		ret := NoLocation(skip + 1)
 
 		// TODO(awreece) Refactor.
-		if flags|requiresPC > 0 {
+		if flags&requiresPC > 0 {
 			// Don't get the pc unless we have to.
 			if pc, file, line, ok := runtime.Caller(skip + 1); ok {
 				// Don't get FuncForPC unless we have to.
-				if flags|Package > 0 || flags|Function > 0 {
+				if flags&Package > 0 || flags&Function > 0 {
 					// TODO(awreece) Make sure this is 
 					// compiler agnostic.
 					funcParts := strings.SplitN(
 						runtime.FuncForPC(pc).Name(),
 						".", 2)
-					if flags|Package > 0 {
+					if flags&Package > 0 {
 						ret["package"] = funcParts[0]
 					}
-					if flags|Function > 0 {
+					if flags&Function > 0 {
 						ret["function"] = funcParts[1]
 					}
 				}
 
-				if flags|File > 0 {
+				if flags&File > 0 {
 					ret["file"] = path.Base(file)
 				}
-				if flags|Line > 0 {
+				if flags&Line > 0 {
 					ret["line"] = strconv.Itoa(line)
 				}
 
 			}
 		}
-		if flags|Hostname > 0 {
+		if flags&Hostname > 0 {
 			if host, err := os.Hostname(); err == nil {
 				ret["hostname"] = host
 			}
