@@ -83,7 +83,7 @@ func (l *multiLogOuterImpl) RemoveLogOuter(key string) {
 	l.lock.Lock()
 	defer l.lock.Unlock()
 
-	l.outers[key] = nil, false
+	delete(l.outers, key)
 }
 
 func (l *multiLogOuterImpl) Output(m *LogMessage) {

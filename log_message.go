@@ -13,7 +13,7 @@ import (
 
 type LogMessage struct {
 	Level       int
-	Nanoseconds int64
+	Nanoseconds time.Time
 	Message     string
 	// A map from the type of metadata to the metadata, if present.
 	// By convention, fields in this map will be entirely lowercase and
@@ -100,8 +100,7 @@ func renderMetadata(buf *bytes.Buffer, m *LogMessage) {
 		return
 	}
 
-	t := time.NanosecondsToLocalTime(m.Nanoseconds)
-	buf.WriteString(t.Format(" 15:04:05.000000"))
+	buf.WriteString(m.Nanoseconds.Format(" 15:04:05.000000"))
 
 	packName, packPresent := m.Metadata["package"]
 	file, filePresent := m.Metadata["file"]

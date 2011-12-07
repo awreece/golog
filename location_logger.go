@@ -31,7 +31,7 @@ func NewDefaultLocationLogger() LocationLogger {
 
 func (l *locationLoggerImpl) makeLogClosure(level int, msg func() string, skip int) func() *LogMessage {
 	// Evaluate this early.
-	ns := time.Nanoseconds()
+	ns := time.Now()
 	// TODO(awreece) Add ns to metadata?
 	metadata := l.getMetadata(skip + 1)
 

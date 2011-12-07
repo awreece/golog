@@ -9,8 +9,8 @@
 package golog
 
 import (
+	"encoding/json"
 	"io"
-	"json"
 	"net"
 	"os"
 	"sync"
@@ -43,7 +43,7 @@ func NewWriterLogOuter(f io.Writer) LogOuter {
 
 // Returns a LogOuter wrapping the file, or an error if the file cannot be
 // opened.
-func NewFileLogOuter(filename string) (LogOuter, os.Error) {
+func NewFileLogOuter(filename string) (LogOuter, error) {
 	// TODO(awreece) Permissions?
 	if file, err := os.OpenFile(filename, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0666); err != nil {
 		return nil, err
@@ -84,9 +84,9 @@ type udpLogOuter struct {
 
 // Returns a LogOuter that forwards LogMessages in json format to UDP network
 // address. TODO(awreece): Use protobuf?
-func NewUDPLogOuter(raddr string) (LogOuter, os.Error) {
+func NewUDPLogOuter(raddr string) (LogOuter, error) {
 	var addr *net.UDPAddr
-	var err os.Error
+	var err error
 	var conn net.PacketConn
 
 	if addr, err = net.ResolveUDPAddr("udp", raddr); err != nil {
