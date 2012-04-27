@@ -26,6 +26,7 @@ func NoLocation(skip int) *LogLocation { return nil }
 
 // Walks up the stack skip frames and returns the LogLocation for that frame.
 // TODO(awreece) Provide a arg to select which fields to produce?
+// REVIEW(korfuri) You can generalize further, see my comment in log_outer.go
 func FullLocation(skip int) *LogLocation {
 	pc, file, line, ok := runtime.Caller(skip + 1)
 	if !ok {

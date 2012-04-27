@@ -27,6 +27,18 @@ type LogLocation struct {
 	File     string
 	Line     int
 }
+// REVIEW(korfuri) I feel weird having LogLocation living half in this
+// file and half in location_logger.go. You should probably give it
+// its own home. I also feel it should be an interface, and not rely
+// on the rest of the world to handle it.
+// I propose
+// type LogLocation interface {
+//   // Converts the location to a human-readable bytes string
+//   RenderTo(*bytes.Buffer) os.Error
+// }
+// A possible use-case would be logging from seveal machines over UDP,
+// where you want to include information about what machine and what
+// process created the message.
 
 type LogMessage struct {
 	Level       int

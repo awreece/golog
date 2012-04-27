@@ -7,7 +7,11 @@ import (
 	"strconv"
 )
 
-var defaultMinLogLevel int = ERROR
+var defaultMinLogLevel int = ERROR  // REVIEW(korfuri) shouldn't log
+				    // level have their own type?
+				    // Especially since you define
+				    // symbolic constants in
+				    // package_logger.go
 
 // Logger.Log uses the level to determine whether or not to output the
 // arguments. Logger.Log will output the provided arguments exactly, without
